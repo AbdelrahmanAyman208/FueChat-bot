@@ -246,3 +246,9 @@ Both stores use **MMR (Maximal Marginal Relevance)** retrieval to balance releva
 - ✅ Summer semester capped at 9 CH
 - ✅ Failed courses prioritised for re-registration
 - ✅ Academic probation warning when CGPA < 2.0
+
+---
+
+## Repository
+
+Published as [FueChat-bot](https://github.com/AbdelrahmanAyman208/FueChat-bot) on GitHub. See `LICENSE` (Apache-2.0).
