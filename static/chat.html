@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Academic Advisor Chat</title>
+  <style>
+    :root { --bg:#212830; --panel:#1a2128; --text:#e7edf2; --muted:#8fa0b2; --border:#2f3a45; --accent:#3b82f6; --user:#224366; --bot:#27323d; --err:#f87171; }
+    * { box-sizing: border-box; }
+    body { margin:0; font-family:"Segoe UI",Arial,sans-serif; color:var(--text); background:var(--bg); height:100vh; overflow:hidden; }
+    .app { display:grid; grid-template-columns:260px 1fr; height:100vh; }
+    .sidebar { background:var(--panel); border-right:1px solid var(--border); display:flex; flex-direction:column; }
+    .sidebar-top { padding:1rem; border-bottom:1px solid var(--border); }
+    .btn { width:100%; text-align:left; border:1px solid var(--border); background:#202833; color:var(--text); border-radius:8px; padding:.55rem .75rem; font-weight:600; cursor:pointer; }
+    .btn:hover { border-color:var(--accent); }
+    .history { flex:1; overflow-y:auto; padding:.75rem; display:flex; flex-direction:column; gap:.5rem; }
+    .session-item { padding:.6rem .7rem; border:1px solid var(--border); border-radius:8px; background:#222c36; color:var(--muted); font-size:.85rem; cursor:pointer; }
+    .session-item.active { border-color:var(--accent); color:var(--text); background:#223142; }
+    .sidebar-foot { border-top:1px solid var(--border); padding:.75rem; font-size:.8rem; color:var(--muted); }
+    .main { display:grid; grid-template-rows:1fr auto; min-height:0; position:relative; }
+    .chat-stage { display:flex; flex-direction:column; min-height:0; background:linear-gradient(180deg,#252e37 0%,#212830 100%); }
+    .welcome { margin:auto; text-align:center; color:var(--muted); padding:1rem; }
+    .logo { font-size:3rem; font-weight:800; margin-bottom:.75rem; background:linear-gradient(90deg,#60a5fa,#a78bfa,#f472b6); -webkit-background-clip:text; background-clip:text; color:transparent; }
+    .status { font-size:.8rem; color:var(--muted); margin-top:.45rem; }
+    .messages { flex:1; overflow-y:auto; padding:1.1rem 1.2rem; display:flex; flex-direction:column; gap:.75rem; max-width:1000px; width:100%; margin:0 auto; }
+    .msg { max-width:88%; padding:.75rem .9rem; border-radius:12px; border:1px solid var(--border); white-space:pre-wrap; line-height:1.45; word-break:break-word; }
+    .msg.user { align-self:flex-end; background:var(--user); }
+    .msg.bot { align-self:flex-start; background:var(--bot); }
+    .msg.error { border-color:var(--err); color:var(--err); }
+    .meta { font-size:.75rem; color:var(--muted); margin-bottom:.35rem; text-transform:uppercase; }
+    .sources { margin-top:.45rem; font-size:.78rem; color:var(--muted); }
+    .composer-wrap { border-top:1px solid var(--border); background:rgba(26,33,40,.95); padding:.8rem; }
+    .composer { max-width:1000px; margin:0 auto; display:grid; grid-template-columns:1fr auto auto auto; gap:.5rem; align-items:end; }
+    textarea, input, select, button { font:inherit; border-radius:9px; border:1px solid var(--border); background:#2a3440; color:var(--text); }
+    #input { min-height:46px; max-height:160px; resize:vertical; padding:.7rem; }
+    .send { background:var(--accent); border-color:var(--accent); color:#fff; padding:.65rem .9rem; cursor:pointer; font-weight:600; }
+    .send:hover { background:#2563eb; }
+    .ghost { background:transparent; color:var(--muted); padding:.65rem .9rem; cursor:pointer; }
+    .profile-panel { position:absolute; top:0; right:0; width:330px; height:100%; border-left:1px solid var(--border); background:#1a2129; transform:translateX(100%); transition:transform .2s ease; z-index:20; display:flex; flex-direction:column; }
+    .profile-panel.open { transform:translateX(0); }
+    .profile-head { padding:.85rem 1rem; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; }
+    .profile-body { padding:.8rem; overflow-y:auto; display:grid; gap:.5rem; }
+    .profile-body label { font-size:.78rem; color:var(--muted); display:grid; gap:.2rem; }
+    .profile-body textarea, .profile-body input, .profile-body select { padding:.45rem .55rem; }
+    @media (max-width:920px){ .app{grid-template-columns:1fr;} .sidebar{display:none;} .profile-panel{width:100%;} .composer{grid-template-columns:1fr auto;} #btnHealth{display:none;} }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="sidebar-top"><button id="btnNew" class="btn">+ New Conversation</button></div>
+      <div id="history" class="history"></div>
+      <div class="sidebar-foot">Academic Advisor UI</div>
+    </aside>
+    <section class="main">
+      <div class="chat-stage">
+        <div id="welcome" class="welcome">
+          <div class="logo">ChatAI</div>
+          <div>Start a conversation about courses, registration, and prerequisites.</div>
+          <div class="status">Session: <span id="sessionText">-</span></div>
+        </div>
+        <div id="messages" class="messages"></div>
+      </div>
+      <div class="composer-wrap">
+        <div class="composer">
+          <textarea id="input" placeholder="Type a message..." rows="2"></textarea>
+          <button id="btnProfile" class="ghost">Profile</button>
+          <button id="btnSend" class="send">Send</button>
+          <button id="btnHealth" class="ghost">API</button>
+        </div>
+      </div>
+      <aside id="profilePanel" class="profile-panel">
+        <div class="profile-head"><strong>Student Profile</strong><button id="btnCloseProfile" class="ghost">Close</button></div>
+        <div class="profile-body">
+          <label><input type="checkbox" id="useProfile"> Enable profile-based advising</label>
+          <label>Name <input id="p_name" type="text" placeholder="Optional"></label>
+          <label>Program <select id="p_program"><option>Computer Science</option><option>Artificial Intelligence</option><option>Cybersecurity</option><option>Information Systems</option><option>Data Science</option></select></label>
+          <label>Level <select id="p_level"><option>Freshman</option><option>Sophomore</option><option>Junior</option><option>Senior</option></select></label>
+          <label>CGPA <input id="p_cgpa" type="number" min="0" max="4" step="0.01" value="3.0"></label>
+          <label>Earned Hours <input id="p_hours" type="number" min="0" value="0"></label>
+          <label>Current Semester <select id="p_semester"><option>Fall</option><option>Spring</option><option>Summer</option></select></label>
+          <label>Passed Courses <textarea id="p_passed" rows="3" placeholder="ENG101, CSC111"></textarea></label>
+          <label>Currently Enrolled <textarea id="p_enrolled" rows="2"></textarea></label>
+          <label>Failed Courses <textarea id="p_failed" rows="2"></textarea></label>
+        </div>
+      </aside>
+    </section>
+  </div>
+  <script>
+    const API = "";
+    const sessions = [];
+    const state = { sessionId: localStorage.getItem("advisor_session_id") || newSessionId(), busy: false };
+    const el = (id) => document.getElementById(id);
+    function newSessionId() { return crypto.randomUUID ? crypto.randomUUID() : "s-" + Date.now() + Math.random().toString(36).slice(2); }
+    function splitCodes(txt) { if (!txt || !txt.trim()) return []; return txt.split(/[,;\n]+/).map((x) => x.trim().toUpperCase()).filter(Boolean); }
+    function buildProfile() {
+      if (!el("useProfile").checked) return null;
+      return { name: el("p_name").value.trim() || undefined, program: el("p_program").value, level: el("p_level").value, cgpa: parseFloat(el("p_cgpa").value || "0"), earned_hours: parseInt(el("p_hours").value || "0", 10), current_semester: el("p_semester").value, passed_courses: splitCodes(el("p_passed").value), currently_enrolled: splitCodes(el("p_enrolled").value), failed_courses: splitCodes(el("p_failed").value) };
+    }
+    function renderHistory() {
+      const h = el("history"); h.innerHTML = "";
+      for (const s of sessions.slice().reverse()) { const item = document.createElement("div"); item.className = "session-item" + (s.id === state.sessionId ? " active" : ""); item.textContent = s.title; item.onclick = () => { state.sessionId = s.id; syncSession(); }; h.appendChild(item); }
+    }
+    function ensureSessionInHistory() { if (sessions.some((s) => s.id === state.sessionId)) return; sessions.push({ id: state.sessionId, title: "Conversation " + (sessions.length + 1) }); renderHistory(); }
+    function syncSession() { localStorage.setItem("advisor_session_id", state.sessionId); el("sessionText").textContent = state.sessionId.slice(0, 10) + "..."; ensureSessionInHistory(); renderHistory(); }
+    function appendMessage(role, text, sources, isError=false) {
+      el("welcome").style.display = "none";
+      const wrap = document.createElement("div"); wrap.className = "msg " + (role === "user" ? "user" : "bot") + (isError ? " error" : "");
+      const m = document.createElement("div"); m.className = "meta"; m.textContent = role === "user" ? "You" : "Advisor"; wrap.appendChild(m);
+      const b = document.createElement("div"); b.textContent = text; wrap.appendChild(b);
+      if (sources && sources.length) { const s = document.createElement("div"); s.className = "sources"; s.textContent = "Sources: " + sources.join(" | "); wrap.appendChild(s); }
+      const msgs = el("messages"); msgs.appendChild(wrap); msgs.scrollTop = msgs.scrollHeight;
+    }
+    async function send() {
+      if (state.busy) return;
+      const text = el("input").value.trim(); if (!text) return;
+      appendMessage("user", text); el("input").value = "";
+      state.busy = true; el("btnSend").disabled = true;
+      try {
+        const res = await fetch(API + "/api/v1/chat", { method: "POST", headers: { "Content-Type": "application/json", "Accept": "application/json" }, body: JSON.stringify({ session_id: state.sessionId, message: text, student_profile: buildProfile() }) });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) { appendMessage("bot", data.detail || res.statusText || "Request failed", null, true); return; }
+        appendMessage("bot", data.answer || "(no answer)", data.sources || []);
+      } catch (err) { appendMessage("bot", String(err), null, true); }
+      finally { state.busy = false; el("btnSend").disabled = false; }
+    }
+    function resetConversation() { state.sessionId = newSessionId(); el("messages").innerHTML = ""; el("welcome").style.display = "block"; syncSession(); }
+    async function checkApi() { try { const r = await fetch(API + "/api/v1/health"); const d = await r.json(); appendMessage("bot", "API Health: " + JSON.stringify(d, null, 2)); } catch (err) { appendMessage("bot", "API check failed: " + err, null, true); } }
+    el("btnSend").addEventListener("click", send);
+    el("input").addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); } });
+    el("btnNew").addEventListener("click", resetConversation);
+    el("btnHealth").addEventListener("click", checkApi);
+    el("btnProfile").addEventListener("click", () => el("profilePanel").classList.add("open"));
+    el("btnCloseProfile").addEventListener("click", () => el("profilePanel").classList.remove("open"));
+    syncSession();
+  </script>
+</body>
+</html>
