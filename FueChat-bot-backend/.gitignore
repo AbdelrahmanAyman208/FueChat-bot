@@ -1,0 +1,32 @@
+# Secrets — never commit
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+rag_env/
+.venv/
+
+# Local vector index (rebuild with ingest)
+vectorstore/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# IDE / OS
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Stray empty files sometimes created by mistake in project root
+/cp
+/pip
+/python
+/uvicorn

@@ -1,0 +1,11 @@
+node_modules/
+.env
+dist/
+build/
+.DS_Store
+__pycache__/
+*.pyc
+venv/
+rag_env/
+.chroma/
+vectorstore/chroma_db/
