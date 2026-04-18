@@ -1,11 +1,36 @@
+# Dependencies
 node_modules/
+
+# Environment
 .env
-dist/
-build/
-.DS_Store
+.env.*
+!.env.example
+
+# Python
 __pycache__/
-*.pyc
+*.py[cod]
+*.so
+.Python
+.venv/
 venv/
 rag_env/
+
+# Build outputs
+dist/
+build/
+
+# Vector databases / embeddings
+vectorstore/
 .chroma/
-vectorstore/chroma_db/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# IDE / OS
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
