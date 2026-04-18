@@ -1,134 +1,82 @@
-# FueBot — Academic Advisor Chatbot Ecosystem
+# FueChat Bot Ecosystem
 
-FueBot is an comprehensive, AI-powered system designed to assist students and academic advisors with degree planning, prerequisite checking, and personalized curriculum insights based on real handbook rules and context-aware profiles.
+FueChat Bot is an integrated academic advising system tailored for students and academic advisors. The system provides role-based portal access, automated schedule generation, and a powerful RAG (Retrieval-Augmented Generation) chatbot for instant advising answers based on the university's academic handbook.
 
-The ecosystem is split into three main components:
-1. **Node.js Backend**: Handles authentication, role-based access control, PostgreSQL database interactions, and proxies requests.
-2. **React Frontend**: Provides distinct dashboard interfaces for both `Students` and `Advisors`.
-3. **Python AI Service (RAG)**: A FastAPI microservice powering the semantic document retrieval and generative AI chatbot.
+## Ecosystem Architecture
+
+The project consists of three main microservices:
+
+### 1. Backend API (`fuebot-backend/`)
+- **Technology:** Node.js with Express.
+- **Database:** PostgreSQL.
+- **Purpose:** Acts as the central hub. It authenticates users (Advisors and Students) securely via HTTP-only session cookies. It serves the REST API for student profile management, course registrations, dynamic schedule group assignments (e.g. for Level 8), and advisor approvals.
+- **Key Files:** `server.js` (entry point), `controllers/` (business logic for auth, chat, student, advisor pipelines), `db/FueBot.sql` (database schema).
+
+### 2. Custom AI Service (`ai-service/`)
+- **Technology:** Python using LangChain, FAISS, and HuggingFace models.
+- **Purpose:** Embeds and queries the University Academic Advising Handbook. When a student asks a complex advising question, the Node.js backend fetches the student's academic profile (GPA, earned credits, passed courses) and delegates the query to this Python service via a REST POST call to `/api/v1/chat` or `/api/v1/advise`. The LLM intelligently incorporates the handbook's constraints alongside the student's exact standing to produce highly personalized curriculum advice.
+- **Key Files:** `main.py` (FastAPI entry point), `app/prompts.py` (strict rules engine for level 8 limitations, and response formatting), `ingest.py` (script to vectorize new PDFs into FAISS).
+
+### 3. Frontend App (`frontend/`)
+- **Technology:** React.js written in TypeScript with Tailwind CSS formatting.
+- **Purpose:** The user interface for both advisors and students. It dynamically renders different features dynamically based on the session role: 
+  - *Students*: Can chat seamlessly with the FueBot, check their academic progress against total required credits, and request their graduation-term schedule.
+  - *Advisors*: Can log in, review a list of assigned students, inspect their completed courses, assign new courses, and approve submitted schedule requests.
+- **Key Files:** `src/features/chat/ChatPage.tsx` (real-time markdown UI for chatbot), `src/features/advisor/` (manage student records), `src/features/profile/` (renders specific profiles per user role).
 
 ---
 
-## 1. Directory Structure
+## Technical Specifications
 
+- **Database Credentials**: PostgreSQL runs on port `5432` with database `fuebot_db`.
+- **Node Server**: Runs on `http://localhost:5000`. Environment secrets (like email SMTP and DB strings) are configured in the `.env`.
+- **Python Fast API**: Runs internally on `http://127.0.0.1:8000`.
+- **React Frontend**: Development server accessible on `http://localhost:3000`.
+
+---
+
+## How to Run the Ecosystem
+
+### Step 1: Initialize Database
+```bash
+# Apply the SQL schema (if not previously applied)
+psql -U postgres -d fuebot_db -f FueChat-bot-backend/fuebot-backend/db/FueBot.sql
 ```
-FueChat-bot-backend/
-├── backend/       # Node.js Express server
-├── frontend/      # React + TypeScript SPA
-├── ai-service/    # Python FastAPI + LangChain + ChromaDB RAG microservice
-└── README.md
+
+### Step 2: Start the Python AI Service
+```bash
+cd ai-service
+
+# Note: You must activate the python virtual environment where dependencies (langchain, fastapi, torch) are installed. 
+# Depending on your setup:
+./venv/Scripts/activate
+
+# Execute the FastAPI server
+python app/main.py
 ```
 
-*(Note: Ensure you are in the corresponding directory when installing dependencies and starting services.)*
+### Step 3: Start the Node.js Backend Server
+Open a new terminal window:
+```bash
+cd FueChat-bot-backend/fuebot-backend
 
----
+# Install packages if missing
+npm install
 
-## 2. Node.js Backend
+# Start the server (ensure .env is properly filled out)
+npm start
+```
 
-The backend is built with Express.js and interfaces with a PostgreSQL relational database. It manages student academic profiles, advisor assignments, course catalogs, and role-based access.
+### Step 4: Start the React Frontend
+Open a new terminal window:
+```bash
+cd frontend
 
-### Prerequisites
-- Node.js (v18+ recommended)
-- PostgreSQL (Listening on port 5432)
+# Install UI packages
+npm install
 
-### Setup & Run
+# Build and start the development server
+npm start
+```
 
-1. **Database Setup**:
-   - Create a PostgreSQL database named `fuebot_db`.
-   - Run the initial seed script located at `backend/db/FueBot.sql` to generate tables and seed initial data.
-   ```sql
-   psql -U postgres -d fuebot_db -f backend/db/FueBot.sql
-   ```
-
-2. **Environment Variables Configured in `backend/.env`**:
-   ```env
-   PGUSER=postgres
-   PGHOST=localhost
-   PGDATABASE=fuebot_db
-   PGPASSWORD=your_password
-   PGPORT=5432
-   SESSION_SECRET=fuechatbot_super_secret_key
-   PORT=5000
-   CLIENT_URL=http://localhost:3000
-   AI_SERVICE_URL=http://localhost:8000
-   ```
-
-3. **Install & Start**:
-   ```bash
-   cd backend
-   npm install
-   npm start
-   ```
-   *The server runs on `http://localhost:5000`.*
-
----
-
-## 3. Python AI Service (RAG)
-
-The AI Microservice manages the intelligence of the system. It ingests the university handbook using PyPDF/Tabula into a local ChromaDB vector store, processing and returning LLM responses via the OpenRouter API.
-
-### Prerequisites
-- Python 3.9+
-- OpenRouter API Key
-- Java (Required for Tabula-py to extract PDF tabular data)
-
-### Setup & Run
-
-1. **Environment Configured in `ai-service/.env`**:
-   ```env
-   OPENROUTER_API_KEY=your_openrouter_api_key
-   OPENROUTER_MODEL=openrouter/auto  # OR meta-llama/llama-3.3-70b-instruct:free
-   PORT=8000
-   ```
-
-2. **Create Virtual Environment & Install Dependencies**:
-   ```bash
-   cd ai-service
-   python -m venv rag_env
-   source rag_env/Scripts/activate  # On Windows: .\rag_env\Scripts\activate
-   pip install -r requirements.txt
-   ```
-
-3. **Ingest Documents & Start**:
-   Make sure the `files/Handbook_2024.pdf` is present.
-   ```bash
-   python main.py
-   ```
-   *The FastAPI server runs on `http://localhost:8000`.*
-
----
-
-## 4. React Frontend
-
-The single-page application is built using React, TypeScript, Redux Toolkit, and Tailwind CSS. It communicates securely via cookies with the Node.js backend to provide specialized tools for students and advisors.
-
-### Prerequisites
-- Node.js
-
-### Setup & Run
-
-1. **Environment Configured in `frontend/.env`**:
-   ```env
-   REACT_APP_API_BASE_URL=http://localhost:5000
-   ```
-
-2. **Install & Start**:
-   ```bash
-   cd frontend
-   npm install
-   npm start
-   ```
-   *The React development server runs on `http://localhost:3000`.*
-
----
-
-## 5. Usage & Test Accounts
-
-Once all three services are running concurrently, access `http://localhost:3000` in your browser.
-
-- **Student Testing**:
-  - Email: `hassan@fue.edu.eg`
-  - Password: `student123`
-- **Advisor Testing**:
-  - Email: `ahmed.advisor@fue.edu.eg`
-  - Password: `advisor123`
+Your system is now online! Navigate your browser to `http://localhost:3000` to interact with FueBot.

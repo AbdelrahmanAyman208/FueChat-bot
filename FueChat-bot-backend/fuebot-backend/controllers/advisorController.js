@@ -87,12 +87,23 @@ exports.getStudentDetails = async (req, res) => {
       .filter(c => c.status === 'completed')
       .reduce((sum, c) => sum + c.credits, 0);
 
+    // Fetch schedule request if applies
+    const scheduleRes = await db.query(
+      `SELECT request_id, group_code, status 
+       FROM student_schedule_request 
+       WHERE student_id = $1 ORDER BY updated_at DESC LIMIT 1`,
+      [studentId]
+    );
+
+    const studentInfo = {
+      ...student,
+      credits_earned: creditsEarned,
+      credits_remaining: (student.credits_needed || 0) - creditsEarned,
+      schedule_request: scheduleRes.rows.length ? scheduleRes.rows[0] : null
+    };
+
     res.json({
-      student: {
-        ...student,
-        credits_earned: creditsEarned,
-        credits_remaining: (student.credits_needed || 0) - creditsEarned,
-      },
+      student: studentInfo,
       courses: {
         completed: courses.filter(c => c.status === 'completed'),
         in_progress: courses.filter(c => c.status === 'in_progress'),
@@ -317,6 +328,40 @@ exports.searchStudents = async (req, res) => {
     res.json({ students: result.rows });
   } catch (error) {
     console.error('Search students error:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+// ── PATCH /advisor/students/:studentId/schedule ───────────────────────────────
+// Update and approve/reject a student's schedule request
+exports.updateStudentSchedule = async (req, res) => {
+  try {
+    const advisorId = req.user.id;
+    const { studentId } = req.params;
+    const { groupCode, status } = req.body;
+
+    // Verify advisor owns student
+    const checkRes = await db.query(
+      `SELECT student_id FROM student WHERE student_id = $1 AND advisor_id = $2`,
+      [studentId, advisorId]
+    );
+    if (!checkRes.rows.length) return res.status(403).json({ message: 'Not authorized to manage this student' });
+
+    if (groupCode) {
+      await db.query(
+        `UPDATE student_schedule_request SET group_code = $1, status = $2, updated_at = NOW() WHERE student_id = $3`,
+        [groupCode, status, studentId]
+      );
+    } else {
+      await db.query(
+        `UPDATE student_schedule_request SET status = $1, updated_at = NOW() WHERE student_id = $2`,
+        [status, studentId]
+      );
+    }
+
+    res.json({ message: 'Schedule updated successfully' });
+  } catch (error) {
+    console.error('Update schedule error:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
 };

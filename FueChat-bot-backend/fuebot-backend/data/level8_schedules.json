@@ -1,0 +1,41 @@
+[
+  {
+    "group_code": "A 4.1",
+    "schedule": [
+      { "course": "SPM", "type": "Practical", "day": "Saturday", "time": "9:00 - 11:00", "hall": "4.7" },
+      { "course": "Security", "type": "Theoretical", "day": "Saturday", "time": "11:00 - 13:00", "hall": "3.2" },
+      { "course": "NLP", "type": "Practical", "day": "Saturday", "time": "13:00 - 15:00", "hall": "1.1" },
+      { "course": "Robotics", "type": "Practical", "day": "Sunday", "time": "11:00 - 13:00", "hall": "C5.1" },
+      { "course": "NLP", "type": "Theoretical", "day": "Sunday", "time": "13:00 - 15:00", "hall": "3.5" },
+      { "course": "Security", "type": "Practical", "day": "Sunday", "time": "15:00 - 17:00", "hall": "2.3" },
+      { "course": "SPM", "type": "Theoretical", "day": "Wednesday", "time": "9:00 - 11:00", "hall": "3.5" },
+      { "course": "Robotics", "type": "Theoretical", "day": "Wednesday", "time": "13:00 - 15:00", "hall": "4.8" }
+    ]
+  },
+  {
+    "group_code": "A 4.2",
+    "schedule": [
+      { "course": "Security", "type": "Practical", "day": "Saturday", "time": "9:00 - 11:00", "hall": "4.6" },
+      { "course": "Security", "type": "Theoretical", "day": "Saturday", "time": "11:00 - 13:00", "hall": "3.2" },
+      { "course": "SPM", "type": "Practical", "day": "Saturday", "time": "13:00 - 15:00", "hall": "4.8" },
+      { "course": "Robotics", "type": "Practical", "day": "Sunday", "time": "11:00 - 13:00", "hall": "2.3" },
+      { "course": "NLP", "type": "Theoretical", "day": "Sunday", "time": "13:00 - 15:00", "hall": "3.5" },
+      { "course": "Robotics", "type": "Theoretical", "day": "Sunday", "time": "15:00 - 17:00", "hall": "4.8" },
+      { "course": "SPM", "type": "Theoretical", "day": "Wednesday", "time": "9:00 - 11:00", "hall": "3.5" },
+      { "course": "NLP", "type": "Practical", "day": "Wednesday", "time": "13:00 - 15:00", "hall": "4.3" }
+    ]
+  },
+  {
+    "group_code": "A 4.3",
+    "schedule": [
+      { "course": "SPM", "type": "Practical", "day": "Saturday", "time": "9:00 - 11:00", "hall": "C5.1" },
+      { "course": "Security", "type": "Theoretical", "day": "Saturday", "time": "11:00 - 13:00", "hall": "3.2" },
+      { "course": "Robotics", "type": "Practical", "day": "Saturday", "time": "13:00 - 15:00", "hall": "2.3" },
+      { "course": "Robotics", "type": "Theoretical", "day": "Sunday", "time": "11:00 - 13:00", "hall": "4.8" },
+      { "course": "NLP", "type": "Theoretical", "day": "Sunday", "time": "13:00 - 15:00", "hall": "3.5" },
+      { "course": "NLP", "type": "Practical", "day": "Sunday", "time": "15:00 - 17:00", "hall": "1.3" },
+      { "course": "SPM", "type": "Theoretical", "day": "Wednesday", "time": "9:00 - 11:00", "hall": "3.5" },
+      { "course": "Security", "type": "Practical", "day": "Wednesday", "time": "13:00 - 15:00", "hall": "4.8" }
+    ]
+  }
+]

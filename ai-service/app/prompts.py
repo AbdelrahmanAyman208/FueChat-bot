@@ -115,10 +115,15 @@ in the {program} program that this student is ELIGIBLE to register.
      ii)  Mandatory courses not yet taken
      iii) Elective courses appropriate for the level
 
-3. For each recommended course output a row:
+3. SCHEDULE QUERIES RULE: 
+   If the student asks for their schedule or timetable:
+     - ONLY provide information if they have >= 102 Earned Hours (Level 8). In this case, simply prompt the student to check the "Requirements & Schedule" tab to select an available schedule group (e.g. A 4.1). Let them know they must submit it for Advisor Approval.
+     - IF THEY HAVE < 102 EARNED HOURS: firmly reply: "Schedules for your level are not available for now. You can only view expected courses based on prerequisites."
+     
+4. For each recommended course list output a row:
    | # | Code | Course Name | Credits | Prerequisite(s) | Why Recommended |
 
-4. End with a brief summary (2–3 sentences) about the student's standing \
+5. End with a brief summary (2–3 sentences) about the student's standing \
 and any academic warnings if CGPA < 2.0."""),
     ("human", "{question}"),
 ])

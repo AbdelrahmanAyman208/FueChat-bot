@@ -197,6 +197,7 @@ function isAdvisingQuestion(message) {
     'which courses', 'course plan', 'register',
     'eligible', 'can i take', 'advise', 'advice',
     'what do i need', 'what courses', 'my plan',
+    'my schedule', 'table', 'next summer'
   ];
   return advisingKeywords.some(keyword => msg.includes(keyword));
 }

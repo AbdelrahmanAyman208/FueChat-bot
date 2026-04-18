@@ -35,4 +35,7 @@ router.post('/students/:studentId/enroll', advisorController.enrollStudentInCour
 // Update student's course status
 router.patch('/students/:studentId/course/:courseCode', advisorController.updateStudentCourseStatus);
 
+// Update student's schedule approval
+router.patch('/students/:studentId/schedule', advisorController.updateStudentSchedule);
+
 module.exports = router;

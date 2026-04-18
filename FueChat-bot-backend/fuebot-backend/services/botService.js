@@ -125,6 +125,10 @@ async function buildKeywordResponse(ctx, message) {
     return buildPlannedCourses(ctx);
   }
 
+  if ((msg.includes('table') && msg.includes('schedule')) || (msg.includes('table') && msg.includes('summer'))) {
+    return await buildScheduleTable(ctx);
+  }
+
   if (msg.includes('all my courses') || msg.includes('show all') || msg.includes('my schedule')) {
     return buildAllCourses(ctx);
   }
@@ -445,6 +449,78 @@ function extractCourseCode(message) {
 function buildProgressBar(pct) {
   const filled = Math.round(pct / 10);
   return '█'.repeat(filled) + '░'.repeat(10 - filled);
+}
+
+async function buildScheduleTable(ctx) {
+  const result = await db.query(
+    `SELECT c.code, c.name, c.credits, c.semester
+     FROM course c
+     WHERE NOT EXISTS (
+       SELECT 1 FROM course_prerequisite cp
+       LEFT JOIN student_course sc
+         ON sc.course_id = cp.prereq_course_id
+        AND sc.student_id = $1
+        AND sc.status = 'completed'
+       WHERE cp.course_id = c.course_id AND sc.course_id IS NULL
+     )
+     AND NOT EXISTS (
+       SELECT 1 FROM student_course sc2
+       WHERE sc2.course_id = c.course_id AND sc2.student_id = $1
+     )
+     ORDER BY c.code LIMIT 6`,
+    [ctx.id]
+  );
+
+  if (!result.rows.length) {
+    return `🎉 ${ctx.firstName}, you're enrolled in all available courses or there are no new ones to suggest right now!`;
+  }
+  
+  const mockDays = [
+     { day: 'Saturday', date: '07/03/2026' },
+     { day: 'Sunday', date: '08/03/2026' },
+     { day: 'Monday', date: '09/03/2026' },
+  ];
+  const mockTimes = ['09:00 - 11:00', '11:00 - 13:00', '13:00 - 15:00', '15:00 - 17:00'];
+  const mockRooms = ['B4.3', 'B2.2', 'I3', 'B4', 'B4.8'];
+  const mockTypes = ['Theoretical', 'Practical'];
+  const mockInstructors = ['Assoc. Prof./Dieaa Ibrahim', 'L/Heba Hamdy', 'TA/Nesma Tamer', 'AL/Nada Emad'];
+
+  let md = `Here is your detailed weekly schedule for the upcoming semester:\n\n`;
+
+  let totalCredits = 0;
+  
+  let courseIdx = 0;
+  for (let d = 0; d < mockDays.length; d++) {
+     if (courseIdx >= result.rows.length) break;
+     
+     md += `**Day: ${mockDays[d].day} ${mockDays[d].date}**\n\n`;
+     md += `| Time | Course | Type | Room | Instructor |\n`;
+     md += `|---|---|---|---|---|\n`;
+
+     let coursesToday = 0;
+     while (coursesToday < 2 && courseIdx < result.rows.length) {
+         let c = result.rows[courseIdx];
+         if (totalCredits + c.credits > 18) {
+             courseIdx++;
+             continue; 
+         }
+         
+         let time = mockTimes[coursesToday % mockTimes.length];
+         let type = mockTypes[courseIdx % mockTypes.length];
+         let room = mockRooms[courseIdx % mockRooms.length];
+         let inst = mockInstructors[courseIdx % mockInstructors.length];
+         
+         md += `| ${time} | **${c.name}** - ${c.code} | ${type} | ${room} | ${inst} |\n`;
+         
+         totalCredits += c.credits;
+         courseIdx++;
+         coursesToday++;
+     }
+     md += `\n`;
+  }
+  
+  md += `**Total Credits Recommended:** ${totalCredits} \n\n*Note: This is a system-generated fallback table displaying mock timetable details for demonstration purposes.*`;
+  return md;
 }
 
 module.exports = { buildBotResponse };

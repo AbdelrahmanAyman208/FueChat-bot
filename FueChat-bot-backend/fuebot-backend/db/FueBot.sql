@@ -82,6 +82,7 @@ CREATE TABLE chat_history (
     chat_id        SERIAL PRIMARY KEY,
     student_id     INTEGER NOT NULL REFERENCES student(student_id)
                               ON UPDATE CASCADE ON DELETE CASCADE,
+    session_id     VARCHAR(100),
     user_message   TEXT NOT NULL,
     bot_response   TEXT,
     session_status VARCHAR(50),
@@ -96,6 +97,15 @@ CREATE TABLE password_reset_token (
     expires_at  TIMESTAMPTZ  NOT NULL,
     used        BOOLEAN      NOT NULL DEFAULT FALSE,
     created_at  TIMESTAMPTZ  NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE student_schedule_request (
+    request_id SERIAL PRIMARY KEY,
+    student_id INTEGER NOT NULL UNIQUE REFERENCES student(student_id) ON DELETE CASCADE,
+    group_code VARCHAR(20) NOT NULL,
+    status VARCHAR(20) NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'approved', 'rejected')),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 
