@@ -3,15 +3,11 @@ rag_chain.py  –  Updated for LangChain 0.2+ with Google Gemini
 """
 from __future__ import annotations
 import logging
-import os
-from typing import Optional
 
 from langchain_core.messages import AIMessage, HumanMessage
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
-from langchain_core.runnables import RunnablePassthrough, RunnableLambda
-from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain_huggingface import ChatHuggingFace, HuggingFacePipeline
+from langchain_core.runnables import RunnableLambda
 from langchain_openai import ChatOpenAI
 
 from app.config import settings
@@ -28,43 +24,17 @@ logger = logging.getLogger(__name__)
 
 
 # ── LLM ──────────────────────────────────────────────────────
-def get_llm(temperature: float = 0.2):
-    if settings.llm_provider == "google":
-        if not settings.google_api_key:
-            raise ValueError("GOOGLE_API_KEY is required for Google provider")
-        return ChatGoogleGenerativeAI(
-            model=settings.gemini_model,
-            temperature=temperature,
-            google_api_key=settings.google_api_key,
-        )
-    elif settings.llm_provider == "huggingface":
-        if settings.hf_token:
-            os.environ.setdefault("HUGGINGFACE_HUB_TOKEN", settings.hf_token)
-        hf_pipeline = HuggingFacePipeline.from_model_id(
-            model_id=settings.hf_model,
-            task="text-generation",
-            model_kwargs=(
-                {"token": settings.hf_token} if settings.hf_token else {}
-            ),
-            pipeline_kwargs={
-                "temperature": temperature,
-                "max_new_tokens": 512,
-                "do_sample": True,
-            },
-        )
-        return ChatHuggingFace(llm=hf_pipeline)
-    elif settings.llm_provider == "openrouter":
-        if not settings.openrouter_api_key:
-            raise ValueError("OPENROUTER_API_KEY is required for OpenRouter provider")
-        return ChatOpenAI(
-            model=settings.openrouter_model,
-            openai_api_key=settings.openrouter_api_key,
-            base_url=settings.openrouter_base_url,
-            temperature=temperature,
-            max_tokens=4096,
-        )
-    else:
-        raise ValueError(f"Unknown LLM provider: {settings.llm_provider}")
+def get_llm(temperature: float | None = None):
+    if not settings.openai_api_key:
+        raise ValueError("OPENAI_API_KEY is required for OpenAI ChatGPT")
+
+    temperature = settings.openai_temperature if temperature is None else temperature
+    return ChatOpenAI(
+        model=settings.openai_model,
+        openai_api_key=settings.openai_api_key,
+        temperature=temperature,
+        max_tokens=4096,
+    )
 
 
 # ── Chat History Store ────────────────────────────────────────

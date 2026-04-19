@@ -2,23 +2,12 @@ from pydantic_settings import BaseSettings
 from pydantic import Field
 
 class Settings(BaseSettings):
-    # LLM Provider
-    llm_provider: str = Field("huggingface", env="LLM_PROVIDER")  # "google" | "huggingface" | "openrouter"
-    
-    # Google Gemini
-    google_api_key: str = Field("", env="GOOGLE_API_KEY")
-    gemini_model: str = Field("gemini-1.5-flash", env="GEMINI_MODEL")
-    
-    # HuggingFace (gated models need HF_TOKEN + access on huggingface.co)
-    hf_model: str = Field("microsoft/DialoGPT-small", env="HF_MODEL")
-    hf_temperature: float = Field(0.7, env="HF_TEMPERATURE")
-    hf_token: str = Field("", env="HF_TOKEN")
+    # OpenAI ChatGPT API
+    openai_api_key: str = Field("", env="OPENAI_API_KEY")
+    openai_model: str = Field("gpt-4o-mini", env="OPENAI_MODEL")
+    openai_temperature: float = Field(0.2, env="OPENAI_TEMPERATURE")
 
-    # OpenRouter (OpenAI-compatible endpoint)
-    openrouter_api_key: str = Field("", env="OPENROUTER_API_KEY")
-    openrouter_model: str = Field("openai/gpt-4o-mini", env="OPENROUTER_MODEL")
-    openrouter_base_url: str = Field("https://openrouter.ai/api/v1", env="OPENROUTER_BASE_URL")
-    
+    # Embeddings / Vector store
     embedding_model: str = Field("models/embedding-001", env="EMBEDDING_MODEL")
 
     # Vector store

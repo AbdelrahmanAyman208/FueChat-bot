@@ -104,18 +104,11 @@ async def chat_ui():
 @app.get("/api/v1/health", tags=["Utility"])
 async def health():
     vsm = get_vector_store_manager()
-    provider = (settings.llm_provider or "").lower()
-    if provider == "google":
-        model = settings.gemini_model
-    elif provider == "openrouter":
-        model = settings.openrouter_model
-    else:
-        model = settings.hf_model
     return {
         "status": "ok",
         "vector_store_ready": vsm.is_ready,
-        "llm_provider": settings.llm_provider,
-        "model": model,
+        "llm_provider": "openai",
+        "model": settings.openai_model,
     }
 
 
