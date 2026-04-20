@@ -12,7 +12,6 @@ class Settings(BaseSettings):
 
     # Vector store
     vector_store_type: str = Field("chroma", env="VECTOR_STORE_TYPE")
-    faiss_index_path: str = Field("vectorstore/faiss_index", env="FAISS_INDEX_PATH")
     chroma_persist_dir: str = Field("vectorstore/chroma_db", env="CHROMA_PERSIST_DIR")
 
     # Paths
