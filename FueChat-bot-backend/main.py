@@ -20,7 +20,7 @@ from pathlib import Path
 
 from fastapi import FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import FileResponse, JSONResponse, StreamingResponse
 
 from app.config import settings
 from app.ingest import run_ingestion
@@ -31,9 +31,9 @@ from app.models import (
     IngestResponse,
 )
 from app.rag_chain import (
-    answer_question,
+    answer_question_stream,
     clear_session,
-    recommend_courses,
+    recommend_courses_stream,
 )
 from app.vector_store import get_vector_store_manager
 
@@ -151,14 +151,14 @@ async def ingest(request: IngestRequest):
 
 @app.post(
     "/api/v1/chat",
-    response_model=ChatResponse,
     tags=["Chat"],
-    summary="General handbook Q&A",
+    summary="General handbook Q&A (Streaming)",
 )
 async def chat(request: ChatRequest):
     """
     Ask any question about the academic handbook (courses, regulations, etc.).
     Optionally provide a `student_profile` to personalise the response.
+    Returns a stream of Server-Sent Events (SSE).
     """
     vsm = get_vector_store_manager()
     if not vsm.is_ready:
@@ -167,47 +167,34 @@ async def chat(request: ChatRequest):
             detail="Vector store not ready. Call POST /api/v1/ingest first.",
         )
 
-    # Cache profile for this session
     if request.student_profile:
         _session_profiles[request.session_id] = request.student_profile
 
     profile = _session_profiles.get(request.session_id)
 
-    try:
-        if profile:
-            # Personalised response
-            result = await recommend_courses(
-                session_id=request.session_id,
-                question=request.message,
-                profile=profile,
-            )
-        else:
-            result = await answer_question(
-                session_id=request.session_id,
-                question=request.message,
-            )
+    async def event_generator():
+        try:
+            if profile:
+                generator = recommend_courses_stream(request.session_id, request.message, profile)
+            else:
+                generator = answer_question_stream(request.session_id, request.message)
 
-        return ChatResponse(
-            session_id=request.session_id,
-            answer=result["answer"],
-            sources=result.get("sources"),
-        )
-    except Exception as exc:
-        logger.exception("Chat error")
-        raise HTTPException(status_code=500, detail=str(exc))
+            async for chunk in generator:
+                # SSE format: data: <chunk>\n\n
+                yield f"data: {chunk}\n\n"
+        except Exception as exc:
+            logger.exception("Chat stream error")
+            yield f"data: [ERROR] {str(exc)}\n\n"
+
+    return StreamingResponse(event_generator(), media_type="text/event-stream")
 
 
 @app.post(
     "/api/v1/advise",
-    response_model=ChatResponse,
     tags=["Advising"],
-    summary="Personalised course recommendations",
+    summary="Personalised course recommendations (Streaming)",
 )
 async def advise(request: ChatRequest):
-    """
-    Provide structured course recommendations.
-    **Requires** `student_profile` in the request body.
-    """
     if not request.student_profile:
         raise HTTPException(
             status_code=400,
@@ -223,21 +210,18 @@ async def advise(request: ChatRequest):
 
     _session_profiles[request.session_id] = request.student_profile
 
-    try:
-        result = await recommend_courses(
-            session_id=request.session_id,
-            question=request.message
-            or "What courses should I register for this semester?",
-            profile=request.student_profile,
-        )
-        return ChatResponse(
-            session_id=request.session_id,
-            answer=result["answer"],
-            sources=result.get("sources"),
-        )
-    except Exception as exc:
-        logger.exception("Advise error")
-        raise HTTPException(status_code=500, detail=str(exc))
+    question = request.message or "What courses should I register for this semester?"
+
+    async def event_generator():
+        try:
+            generator = recommend_courses_stream(request.session_id, question, request.student_profile)
+            async for chunk in generator:
+                yield f"data: {chunk}\n\n"
+        except Exception as exc:
+            logger.exception("Advise stream error")
+            yield f"data: [ERROR] {str(exc)}\n\n"
+
+    return StreamingResponse(event_generator(), media_type="text/event-stream")
 
 
 @app.delete(

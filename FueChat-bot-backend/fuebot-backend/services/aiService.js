@@ -1,8 +1,9 @@
 const axios = require('axios');
+const redis = require('redis');
 
 // ── Configuration ─────────────────────────────────────────────────
 const AI_BASE_URL = process.env.AI_SERVICE_URL || 'http://localhost:8000';
-const AI_TIMEOUT  = parseInt(process.env.AI_SERVICE_TIMEOUT) || 30000;
+const AI_TIMEOUT  = parseInt(process.env.AI_SERVICE_TIMEOUT) || 90000;
 const AI_ENABLED  = (process.env.AI_ENABLED || 'true').toLowerCase() === 'true';
 
 const aiClient = axios.create({
@@ -10,6 +11,15 @@ const aiClient = axios.create({
   timeout: AI_TIMEOUT,
   headers: { 'Content-Type': 'application/json' },
 });
+
+// ── Redis ────────────────────────────────────────────────────────
+let redisClient;
+try {
+  redisClient = redis.createClient({ url: process.env.REDIS_URL || 'redis://localhost:6379' });
+  redisClient.connect().then(() => console.log('✅ Redis connected')).catch(err => console.warn('⚠️ Redis conn error:', err.message));
+} catch (e) {
+  console.warn('⚠️ Failed to initialize Redis');
+}
 
 // ── Major Mapping ─────────────────────────────────────────────────
 // Maps DB abbreviations → Python AI's expected program enum values
@@ -123,21 +133,51 @@ async function checkAIHealth() {
  * Retry helper — retries an async function up to `retries` times with
  * a delay between attempts. Handles OpenRouter 524 (provider timeout) errors.
  */
-async function withRetry(fn, retries = 2, delayMs = 2000) {
+async function withRetry(fn, retries = 4, delayMs = 1500) {
   for (let attempt = 0; attempt <= retries; attempt++) {
     try {
       return await fn();
     } catch (error) {
-      const is524 = error?.response?.status === 500 || error?.response?.data?.detail?.includes?.('524');
+      const status = error?.response?.status;
+      const isProviderError = status === 500 || status === 502 || status === 503 || error?.response?.data?.detail?.includes?.('524');
       const isTimeout = error.code === 'ECONNABORTED' || error.code === 'ETIMEDOUT';
-      if ((is524 || isTimeout) && attempt < retries) {
-        console.warn(`[AI] Attempt ${attempt + 1} failed (${is524 ? '524 provider timeout' : 'timeout'}), retrying in ${delayMs}ms...`);
+      if ((isProviderError || isTimeout) && attempt < retries) {
+        console.warn(`[AI] Attempt ${attempt + 1} failed (status=${status || error.code}), retrying in ${delayMs}ms...`);
         await new Promise(resolve => setTimeout(resolve, delayMs));
         continue;
       }
       throw error;
     }
   }
+}
+
+/**
+ * Streams the response from the AI service directly to the Express `res` object,
+ * and compiles the total string for DB saving.
+ */
+async function callAIStream(endpoint, payload, res) {
+  return withRetry(async () => {
+    const response = await aiClient.post(endpoint, payload, { responseType: 'stream' });
+    let fullAnswer = "";
+
+    return new Promise((resolve, reject) => {
+      response.data.on('data', (chunk) => {
+        const text = chunk.toString();
+        // Parse SSE simply to build the final DB string locally
+        const lines = text.split('\n');
+        for (const line of lines) {
+          if (line.startsWith('data: ') && !line.includes('[ERROR]')) {
+             fullAnswer += line.substring(6);
+          }
+        }
+        // Proxy the exact raw chunk packet to the client
+        res.write(chunk);
+      });
+
+      response.data.on('end', () => resolve(fullAnswer));
+      response.data.on('error', (err) => reject(err));
+    });
+  });
 }
 
 /**
@@ -184,6 +224,7 @@ async function callAIChatWithProfile(sessionId, message, studentProfile) {
   });
 }
 
+
 // ── Keyword Detection ─────────────────────────────────────────────
 /**
  * Determines whether the message is an advising question
@@ -203,29 +244,52 @@ function isAdvisingQuestion(message) {
 }
 
 /**
- * High-level function: routes the message to the appropriate AI endpoint.
- * Called from botService.js — returns the AI answer or throws on error.
+ * High-level function: routes the message to the appropriate AI endpoint and supports streaming/caching.
  */
-async function getAIResponse(message, studentContext) {
-  const sessionId = `student-${studentContext.id}`;
+async function getAIResponseStream(message, studentContext, providedSessionId, res) {
+  const sessionId = providedSessionId || `student-${studentContext.id}`;
   const profile   = mapStudentContextToProfile(studentContext);
+  const cacheKey  = `chat:cache:${profile.student_id}:${message.trim().toLowerCase()}`;
 
-  if (isAdvisingQuestion(message)) {
-    // Use the /advise endpoint for personalised course recommendations
-    return await callAIAdvise(sessionId, message, profile);
-  } else {
-    // Use /chat with profile for general questions with personalisation
-    return await callAIChatWithProfile(sessionId, message, profile);
+  // 1. Check Redis Cache
+  if (redisClient && redisClient.isReady) {
+    try {
+      const cachedResponse = await redisClient.get(cacheKey);
+      if (cachedResponse) {
+        console.log(`[AI] Cache Hit for student ${studentContext.id}`);
+        // Mock streaming the cache to the frontend chunk by chunk
+        const chunks = cachedResponse.match(/.{1,10}/g) || [cachedResponse];
+        for (const chunk of chunks) {
+          res.write(`data: ${chunk}\n\n`);
+          await new Promise(r => setTimeout(r, 10)); // simulate stream speed slightly
+        }
+        return cachedResponse;
+      }
+    } catch (err) {
+      console.warn('redis cache check failed', err);
+    }
   }
+
+  // 2. Fetch and Proxy Stream
+  let finalAnswer = "";
+  if (isAdvisingQuestion(message)) {
+    finalAnswer = await callAIStream('/api/v1/advise', { session_id: sessionId, message, student_profile: profile }, res);
+  } else {
+    finalAnswer = await callAIStream('/api/v1/chat', { session_id: sessionId, message, student_profile: profile }, res);
+  }
+
+  // 3. Save to Redis Cache (expire in 2 hours)
+  if (redisClient && redisClient.isReady && finalAnswer) {
+    redisClient.setEx(cacheKey, 7200, finalAnswer).catch(console.warn);
+  }
+
+  return finalAnswer;
 }
 
 module.exports = {
   AI_ENABLED,
   checkAIHealth,
-  getAIResponse,
-  callAIChat,
-  callAIAdvise,
-  callAIChatWithProfile,
+  getAIResponseStream,
   mapStudentContextToProfile,
   mapMajorToProgram,
   inferLevel,

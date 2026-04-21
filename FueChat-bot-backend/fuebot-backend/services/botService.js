@@ -63,17 +63,19 @@ async function loadStudentContext(studentId) {
  * STRATEGY: Try the Python AI service first for intelligent RAG-powered
  * responses. If the AI is unavailable, fall back to keyword-based responses.
  */
-async function buildBotResponse(message, studentId) {
+async function buildBotResponseStream(message, studentId, sessionId, res) {
   const ctx = await loadStudentContext(studentId);
 
   if (!ctx) {
-    return "Sorry, I couldn't load your student profile. Please try logging in again.";
+    const errorMsg = "Sorry, I couldn't load your student profile. Please try logging in again.";
+    res.write(`data: ${errorMsg}\n\n`);
+    return errorMsg;
   }
 
   // ── Try AI-powered response first ──────────────────────────
   if (AI_ENABLED) {
     try {
-      const aiAnswer = await getAIResponse(message, ctx);
+      const aiAnswer = await getAIResponseStream(message, ctx, sessionId, res);
       if (aiAnswer) {
         console.log(`[AI] Successfully got AI response for student ${studentId}`);
         return aiAnswer;
@@ -87,7 +89,9 @@ async function buildBotResponse(message, studentId) {
   }
 
   // ── Fallback: keyword-based responses ──────────────────────
-  return buildKeywordResponse(ctx, message);
+  const fallbackAnswer = await buildKeywordResponse(ctx, message);
+  res.write(`data: ${fallbackAnswer}\n\n`);
+  return fallbackAnswer;
 }
 
 /**
@@ -523,4 +527,4 @@ async function buildScheduleTable(ctx) {
   return md;
 }
 
-module.exports = { buildBotResponse };
+module.exports = { buildBotResponseStream, buildBotResponse: async (m, s) => buildBotResponseStream(m, s, null, { write: () => {} }) };

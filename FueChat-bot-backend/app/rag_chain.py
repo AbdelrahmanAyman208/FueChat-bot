@@ -139,6 +139,38 @@ def build_advisor_chain():
 
 
 # ── Public Inference Functions ────────────────────────────────
+async def answer_question_stream(session_id: str, question: str):
+    vsm = get_vector_store_manager()
+    retriever = vsm.get_retriever()
+    llm = get_llm()
+    history = get_session_history(session_id)
+
+    # Step 1: Contextualize
+    if not history:
+        standalone_q = question
+    else:
+        chain = CONTEXTUALISE_Q_TEMPLATE | llm | StrOutputParser()
+        standalone_q = await chain.ainvoke({"chat_history": history, "question": question})
+
+    # Step 2: Retrieve
+    docs = await retriever.ainvoke(standalone_q)
+    context = format_docs(docs)
+
+    # Step 3: Stream
+    chain = RAG_TEMPLATE | llm | StrOutputParser()
+    chunks = []
+    async for chunk in chain.astream({
+        "context": context,
+        "chat_history": history,
+        "question": question,
+    }):
+        chunks.append(chunk)
+        yield chunk
+
+    full_answer = "".join(chunks)
+    add_to_history(session_id, question, full_answer)
+
+
 async def answer_question(session_id: str, question: str) -> dict:
     chain = build_rag_chain()
     history = get_session_history(session_id)
@@ -157,14 +189,8 @@ async def answer_question(session_id: str, question: str) -> dict:
     return {"answer": answer, "sources": list(set(sources))}
 
 
-async def recommend_courses(
-    session_id: str,
-    question: str,
-    profile: StudentProfile,
-) -> dict:
+async def recommend_courses_stream(session_id: str, question: str, profile: StudentProfile):
     vsm = get_vector_store_manager()
-    # Use broader, question-aware retrieval to capture study-plan tables and
-    # prerequisite rows that may be missed by a single narrow query.
     retriever = vsm.get_retriever(k=16)
     queries = [
         (
@@ -189,7 +215,8 @@ async def recommend_courses(
         context = f"{context}\n\n---\n\n{manual_rules}"
 
     chain = build_advisor_chain()
-    result = await chain.ainvoke({
+    chunks = []
+    async for chunk in chain.astream({
         "name": profile.name or "Student",
         "program": profile.program.value,
         "level": profile.level.value,
@@ -202,11 +229,9 @@ async def recommend_courses(
         "failed_courses": ", ".join(profile.failed_courses) or "None",
         "context": context,
         "question": question,
-    })
+    }):
+        chunks.append(chunk)
+        yield chunk
 
-    sources = [
-        doc.metadata.get("source", "")
-        for doc in docs
-    ]
-    add_to_history(session_id, question, result)
-    return {"answer": result, "sources": list(set(sources))}
+    full_answer = "".join(chunks)
+    add_to_history(session_id, question, full_answer)

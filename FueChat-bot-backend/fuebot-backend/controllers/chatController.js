@@ -1,5 +1,5 @@
 const db = require('../config/db');
-const { buildBotResponse } = require('../services/botService');
+const { buildBotResponseStream, buildBotResponse } = require('../services/botService');
 const { checkAIHealth } = require('../services/aiService');
 
 // POST /chat/message
@@ -12,11 +12,20 @@ exports.sendMessage = async (req, res) => {
       return res.status(400).json({ message: 'Message cannot be empty' });
     }
 
-    // buildBotResponse loads full student context internally
-    const botResponse = await buildBotResponse(message.trim(), studentId);
-
     const finalSessionId = sessionId || `session-${Date.now()}-${studentId}`;
 
+    // Set headers for SSE (Server-Sent Events)
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
+
+    // First chunk immediately gives frontend the new sessionId
+    res.write(`data: [SESSION_ID] ${finalSessionId}\n\n`);
+
+    // buildBotResponseStream handles the exact res.write() logic natively
+    const botResponse = await buildBotResponseStream(message.trim(), studentId, finalSessionId, res);
+
+    // After the stream is finished running completely, save it to PostgreSQL.
     const result = await db.query(
       `INSERT INTO chat_history (student_id, user_message, bot_response, session_id, session_status)
        VALUES ($1, $2, $3, $4, 'open') RETURNING chat_id, timestamp`,
@@ -24,27 +33,14 @@ exports.sendMessage = async (req, res) => {
     );
 
     const chatId = result.rows[0].chat_id;
-    const timestamp = result.rows[0].timestamp;
+    // Tell frontend the stream is absolutely completed
+    res.write(`data: [DONE] ${chatId}\n\n`);
+    res.end();
 
-    // Return in the format the React frontend expects
-    res.status(201).json({
-      sessionId:   finalSessionId,
-      message: {
-        id:        `msg-${chatId}`,
-        role:      'assistant',
-        content:   botResponse,
-        timestamp: timestamp,
-        status:    'complete',
-      },
-      // Also include legacy fields for backward compat
-      chatId,
-      userMessage: message.trim(),
-      botResponse,
-      timestamp,
-    });
   } catch (error) {
     console.error('Chat error:', error);
-    res.status(500).json({ message: 'Internal server error' });
+    res.write(`data: [ERROR] Internal server error\n\n`);
+    res.end();
   }
 };
 
@@ -114,6 +110,18 @@ exports.getSessions = async (req, res) => {
     res.json(result.rows);
   } catch (error) {
     console.error('Get sessions error:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+// DELETE /chat/session/:sessionId
+exports.deleteSession = async (req, res) => {
+  try {
+    const { sessionId } = req.params;
+    await db.query('DELETE FROM chat_history WHERE student_id = $1 AND session_id = $2', [req.user.id, sessionId]);
+    res.json({ message: 'Session deleted successfully' });
+  } catch (error) {
+    console.error('Delete session error:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
 };

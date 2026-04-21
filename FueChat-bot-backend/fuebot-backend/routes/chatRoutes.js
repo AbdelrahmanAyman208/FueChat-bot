@@ -11,6 +11,7 @@ router.get('/welcome', chatController.getWelcome);      // GET after login → p
 router.post('/message', chatController.sendMessage);    // POST a message → bot response
 router.get('/sessions', chatController.getSessions);    // GET distinct sessions/conversations
 router.get('/history', chatController.getChatHistory);  // GET conversation history
+router.delete('/session/:sessionId', chatController.deleteSession); // DELETE a specific session
 router.delete('/history', chatController.clearHistory); // DELETE all history
 router.get('/ai-status', chatController.getAIStatus);   // GET AI service health status
 

@@ -1,254 +1,155 @@
-# 🎓 Academic Advisor Chatbot
-### RAG-powered Course Recommendation System  
-**Faculty of Computers & Information Technology – Future University Egypt**
+# 🎓 FueBot: Academic Advisor Chatbot
+### Full-Stack RAG System for University Course Recommendation
+
+FueBot is an intelligent, full-stack Academic Advising application built for the Faculty of Computers & Information Technology. It combines a **React** frontend, a **Node.js/Express** backend for authentication and database management, and a **Python (FastAPI)** AI microservice that runs a Retrieval-Augmented Generation (RAG) pipeline to query the university handbook and generate personalized course recommendations.
 
 ---
 
-## 🏗️ Architecture
+## 🏗️ High-Level System Architecture
 
-```
-┌────────────────────────────────────────────────────────────────────┐
-│                        FastAPI Backend                             │
-│                                                                    │
-│  POST /api/v1/ingest ──► PDFProcessor ──► VectorStoreManager      │
-│                           │                    │                   │
-│                      pdfplumber            FAISS / Chroma          │
-│                      tabula-py             (persisted to disk)     │
-│                      camelot                                       │
-│                                                                    │
-│  POST /api/v1/chat ────► RAG Chain                                 │
-│  POST /api/v1/advise ──► CourseAdvisorChain                        │
-│                              │                                     │
-│                    ┌─────────┴──────────┐                          │
-│                    │                    │                          │
-│              Retriever             GPT-4o-mini                     │
-│            (MMR top-k)          (prompt-engineered)                │
-│                    │                    │                          │
-│             Handbook chunks      Structured answer                 │
-└────────────────────────────────────────────────────────────────────┘
-```
+The application is built across three distinct layers. Here is how they interact:
 
----
+```mermaid
+graph TD
+    %% Frontend Layer
+    subgraph Frontend [1. React Client (Port 3000)]
+        UI[Web Interface]
+        Redux[Redux Store]
+        UI -->|Dispatches Actions| Redux
+    end
 
-## 📁 Project Structure
+    %% Backend Layer
+    subgraph Backend [2. Node.js Backend (Port 5000)]
+        Auth[Auth Controller]
+        DB[(PostgreSQL DB)]
+        Proxy[AI Proxy & Fallback]
+        
+        Auth <--> DB
+        Proxy <--> DB
+    end
 
-```
-academic_advisor/
-├── app/
-│   ├── __init__.py
-│   ├── config.py          # Settings from .env
-│   ├── models.py          # Pydantic schemas (StudentProfile, etc.)
-│   ├── pdf_processor.py   # PDF extraction: pdfplumber + tabula + camelot
-│   ├── vector_store.py    # FAISS & Chroma vector store management
-│   ├── prompts.py         # All LangChain prompt templates
-│   ├── rag_chain.py       # LangChain RAG chain assembly
-│   ├── ingest.py          # One-shot ingestion script
-│   └── main.py            # FastAPI application
-├── data/
-│   └── handbook.pdf       # ← Place your PDF here
-├── vectorstore/
-│   ├── faiss_index/       # FAISS persisted index (auto-created)
-│   └── chroma_db/         # ChromaDB persisted collection (auto-created)
-├── notebooks/
-│   └── exploration.ipynb  # Interactive testing
-├── requirements.txt
-├── .env.example
-└── README.md
+    %% AI Layer
+    subgraph AILayer [3. Python FastAPI (Port 8000)]
+        VectorStore[(Chroma / FAISS)]
+        LLM((OpenRouter LLM))
+        RAGChain[LangChain RAG Pipeline]
+        
+        RAGChain <--> VectorStore
+        RAGChain <--> LLM
+    end
+
+    %% Flow
+    Redux -->|HTTP POST JSON| Auth
+    Redux -->|HTTP POST /api/chat| Proxy
+    Proxy -->|REST API Call| RAGChain
 ```
 
 ---
 
-## ⚙️ Setup
+## 🔄 The Data Flow: Step-by-Step
 
-### 1. Clone & install dependencies
+How does the bot take an input, process it, and generate an output? Here is the exact end-to-end pipeline:
 
+### Phase 1: Input (The React Client)
+1. **User Action:** The student opens the `/chat` page and types a query (e.g., *"What is summer training?"* or *"What courses should I register for?"*).
+2. **State Management:** The React front-end (using Redux) captures the input, updates the UI timeline to show the user's message, and puts the `isLoading` state to `true`.
+3. **API Request:** Redux dispatches an asynchronous call (`axios.post(/api/chat/message)`) to the Node.js backend, sending the `message` string and the current `sessionId`.
+
+### Phase 2: Processing & Context Assembly (The Node.js Backend)
+1. **Cookie Auth Check:** The backend middleware verifies the HTTP-Only JWT cookie. It extracts the `studentId`.
+2. **Database Fetch:** The backend queries the **PostgreSQL** database to fetch the student's complete profile (CGPA, passed courses, current semester, academic level).
+3. **Proxy Routing:** 
+   - The backend checks if the AI service is enabled.
+   - It formats a payload containing both the `message` and the `student_profile` and routes this to the **Python AI Microservice** (`http://localhost:8000/api/v1/advise` or `/cat`).
+
+### Phase 3: The Brain (The Python RAG Pipeline)
+1. **Query Reformulation:** LangChain takes the chat history and the new question, passing it to the LLM to rewrite the question into a standalone, context-free query (e.g., resolving pronouns).
+2. **Vector Retrieval (ChromaDB):** 
+   - The standalone query is converted into embeddings using a SentenceTransformer.
+   - The system performs an MMR (Maximal Marginal Relevance) similarity search against the previously ingested `handbook.pdf` chunks.
+   - It retrieves the top `K` most relevant handbook paragraphs and tables.
+3. **Prompt Injection:** A massive prompt is constructed containing:
+   - The **System Rules** (e.g., "Max hours is 21 if CGPA > 3.0").
+   - The **Student Profile** passed from Node.js.
+   - The **Retrieved Handbook Context**.
+   - The actual **User Question**.
+4. **LLM Generation:** The enriched prompt is sent to the LLM provider (e.g., OpenRouter / Meta Llama). The LLM reads the handbook context, considers the user's CGPA, and generates a confident, hallucination-free response formatted in Markdown (often containing a structured tabular schedule).
+
+### Phase 4: Output Delivery
+1. **Response Relay:** The Python script returns the Markdown text back to the Node.js backend.
+2. **Database Logging:** Node.js saves both the user's prompt and the bot's response into the PostgreSQL `chat_history` table so it persists across sessions.
+3. **Frontend Rendering:** The React UI receives the HTTP response, slices it into the Redux state, and the `ReactMarkdown` library renders the complex tables, lists, and bold text onto the screen beautifully.
+
+> [!NOTE]
+> **Fallback Mechanism:** If the Python server is offline, or if the LLM provider times out (e.g., an OpenRouter 524 Error), the Node.js backend catches the crash and gracefully falls back to a Hardcoded Keyword Bot. The user is told "I am currently offline, but here is a basic answer...", preventing a total UI crash!
+
+---
+
+## 📁 System Requirements & Tech Stack
+
+### Frontend (User Interface)
+- **Framework:** React 18 / TypeScript / Vite
+- **State Management:** Redux Toolkit
+- **Styling:** Tailwind CSS (Custom Dark Theme, Flexbox-driven layouts)
+- **Markdown:** `react-markdown` + `remark-gfm` for tables
+
+### Backend (Business Logic & Auth)
+- **Environment:** Node.js / Express.js
+- **Database:** PostgreSQL (using `pg` driver)
+- **Authentication:** JWT (JSON Web Tokens) stored securely in `httpOnly` cookies.
+
+### AI Microservice (Advising Engine)
+- **Framework:** FastAPI / Python 3.11+
+- **Orchestration:** LangChain v0.2
+- **Vector Store:** Chroma / FAISS (Local persistent embeddings)
+- **Embeddings:** HuggingFace `all-MiniLM-L6-v2`
+- **LLM Routing:** OpenRouter (`openai/gpt-oss-120b:free`, generic Meta-Llama, etc.)
+
+---
+
+## ⚙️ Running the Project
+
+To run the full stack simultaneously, open three separate terminal windows:
+
+### 1. The Database
+Ensure PostgreSQL is running locally on port `5432` with a database named `fuebot` matching your `backend/.env` credentials.
+
+### 2. The Python AI Server
+Ensure your `OPENROUTER_API_KEY` is set in the `.env` file at the root.
 ```bash
-pip install -r requirements.txt
+# In the root folder
+python -m uvicorn main:app --host 127.0.0.1 --port 8000
 ```
 
-> **Note:** `tabula-py` requires **Java** installed on your system.  
-> `camelot` requires **Ghostscript** for PDF rendering and **OpenCV** (`opencv-python`) for table detection.  
-> On Windows, we avoid the `camelot-py[base]` extra because it pulls in `pdftopng>=0.2.3`, which isn’t available for Python 3.11.
-
-### 2. Configure environment
-
+### 3. The Node.js Backend
+Ensure your database credentials are right.
 ```bash
-cp .env.example .env
-# Edit .env and set your GOOGLE_API_KEY
+cd fuebot-backend
+npm install
+npm start
 ```
+*(Runs on `http://localhost:5000`)*
 
-### 3. Place your PDF
-
+### 4. The React Frontend
 ```bash
-cp /path/to/handbook.pdf data/handbook.pdf
+cd frontend/frontend
+npm install
+npm start
 ```
+*(Runs on `http://localhost:3000`)*
 
-### 4. Ingest the PDF
+---
 
+## 🔧 AI Ingestion (One-Time Setup)
+Before the bot can answer questions, it has to "read" the handbook.
+Place your `handbook.pdf` inside the `data/` folder, and trigger the ingestion script via the swagger ui or explicitly running:
 ```bash
 python -m app.ingest
-# or with rebuild flag:
-python -m app.ingest --rebuild
 ```
-
-This will:
-- Extract all text and tables (pdfplumber → tabula → camelot)
-- Split into ~800-token chunks with 150-token overlap
-- Embed using `text-embedding-3-small`
-- Persist to FAISS and/or Chroma
-
-### 4.1 Manual prerequisite rules (recommended if PDF tables are messy)
-
-If table extraction misses prerequisite rows, fill `data/manual_prerequisites.csv`.
-These rows are injected into advising context and used as high-priority eligibility rules.
-
-CSV columns:
-- `course_code` (required)
-- `course_name`
-- `program` (e.g. `Computer Science`)
-- `level` (e.g. `Freshman`, `Sophomore`)
-- `semester` (`Fall` / `Spring` / `Summer`)
-- `prerequisites` (comma-separated codes, e.g. `CSC122,CPS121`)
-- `credits`
-
-### 5. Start the API
-
-```bash
-uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
-```
-
-Open **http://localhost:8000/docs** for the interactive Swagger UI.
+This extracts text using `pdfplumber`, detects tables, chunks them, and stores the numerical vectors in the `vectorstore/` folder permanently.
 
 ---
-
-## 🔌 API Usage
-
-### Health Check
-```http
-GET /api/v1/health
-```
-
-### Ingest PDF
-```http
-POST /api/v1/ingest
-Content-Type: application/json
-
-{
-  "rebuild": false
-}
-```
-
-### General Handbook Q&A
-```http
-POST /api/v1/chat
-Content-Type: application/json
-
-{
-  "session_id": "user-123",
-  "message": "What are the prerequisites for Data Structures?"
-}
-```
-
-### Personalised Course Recommendation
-```http
-POST /api/v1/advise
-Content-Type: application/json
-
-{
-  "session_id": "user-123",
-  "message": "What courses should I register for this semester?",
-  "student_profile": {
-    "name": "Ahmed Ali",
-    "program": "Computer Science",
-    "level": "Sophomore",
-    "cgpa": 2.8,
-    "earned_hours": 36,
-    "current_semester": "Fall",
-    "passed_courses": [
-      "ENG101","BMT111","BMT112","BPH111","CSC111","PSC110",
-      "ENG102","BMT121","CSC121","CPS121","BMT122","CSC122",
-      "CPS211","CSC211","BPH211","BMT212","BMT211"
-    ],
-    "currently_enrolled": ["CSC221"],
-    "failed_courses": []
-  }
-}
-```
-
-**Example Response:**
-```json
-{
-  "session_id": "user-123",
-  "answer": "Based on your academic standing...\n\n| # | Code | Course Name | Credits | Prerequisites | Why Recommended |\n|...",
-  "sources": ["data/handbook.pdf (p.35)", "data/handbook.pdf (p.36)"]
-}
-```
-
----
-
-## 🧠 RAG Pipeline Details
-
-### PDF Extraction Strategy
-
-| Library | Purpose | When Used |
-|---------|---------|-----------|
-| `pdfplumber` | Text + basic tables | Always (primary) |
-| `tabula-py` | Stream/lattice tables | Supplements pdfplumber |
-| `camelot` | High-accuracy tables with lines | Optional (needs Ghostscript) |
-
-### Vector Stores
-
-| Store | Best For | Config |
-|-------|---------|--------|
-| **FAISS** | Fast in-memory similarity search | `VECTOR_STORE_TYPE=faiss` |
-| **ChromaDB** | Persistent, metadata filtering | `VECTOR_STORE_TYPE=chroma` |
-| **Both** | Redundancy + comparison | `VECTOR_STORE_TYPE=both` |
-
-Both stores use **MMR (Maximal Marginal Relevance)** retrieval to balance relevance and diversity.
-
-### Prompt Engineering
-
-1. **System prompt** – Defines the advisor persona and 8 strict rules (prerequisites, credit limits, etc.)
-2. **RAG template** – Injects retrieved handbook passages before the question
-3. **Course advisor template** – Structured template for student profile → course recommendations
-4. **Contextualise template** – Reformulates follow-up questions for standalone retrieval
-
----
-
-## 🎛️ Key Configuration Options
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `GEMINI_MODEL` | `gemini-1.5-flash` | LLM model |
-| `VECTOR_STORE_TYPE` | `chroma` | `faiss` / `chroma` / `both` |
-| `CHUNK_SIZE` | `800` | Characters per chunk |
-| `CHUNK_OVERLAP` | `150` | Overlap between chunks |
-| `RETRIEVER_K` | `6` | Top-k chunks to retrieve |
-
----
-
-## 📋 Supported Programs
-
-| Code | Program |
-|------|---------|
-| CS | Computer Science |
-| AI | Artificial Intelligence |
-| CS_SEC | Cybersecurity |
-| IS | Information Systems |
-| DS | Data Science |
-
----
-
-## 🔒 Academic Rules Enforced
-
-- ✅ Prerequisites strictly checked
-- ✅ Max credit hours: 15 / 18 / 21 based on CGPA  
-- ✅ Summer semester capped at 9 CH
-- ✅ Failed courses prioritised for re-registration
-- ✅ Academic probation warning when CGPA < 2.0
-
----
-
-## Repository
-
-Published as [FueChat-bot](https://github.com/AbdelrahmanAyman208/FueChat-bot) on GitHub. See `LICENSE` (Apache-2.0).
+## 🔒 Security & Roles
+The backend strictly enforces endpoints using JWT.
+- **Students:** Can query the bot and receive unique course advising tied to their DB CGPA.
+- **Advisors:** Bypassed from the bot. They have a dashboard to view the CGPA and history of all students assigned to them. Route guards heavily protect cross-contamination.
