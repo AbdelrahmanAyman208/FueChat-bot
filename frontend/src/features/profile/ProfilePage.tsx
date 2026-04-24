@@ -9,18 +9,32 @@ import Select from '../../components/ui/Select';
 import { addToast } from '../ui/uiSlice';
 import PageShell from '../../components/common/PageShell';
 
+const MAJOR_NAMES: Record<string, string> = {
+  'CS': 'Computer Science',
+  'AI': 'Artificial Intelligence',
+  'IS': 'Information Systems',
+  'DM': 'Digital Media Technology',
+  'DS': 'Data Science',
+  'CY': 'Cyber Security',
+};
+
 const ProfilePage = () => {
   const dispatch = useAppDispatch();
   const { data, status, error } = useAppSelector((state) => state.profile);
+  const { user } = useAppSelector((state) => state.auth);
   const [formState, setFormState] = useState(data);
 
+  const isAdvisor = user?.role === 'advisor';
+
   useEffect(() => {
+    if (isAdvisor) return; // Advisors don't use the student profile endpoint
+
     if (!data) {
       dispatch(fetchProfile());
     } else {
       setFormState(data);
     }
-  }, [data, dispatch]);
+  }, [data, dispatch, isAdvisor]);
 
   const handleSave = async () => {
     if (!formState) return;
@@ -38,8 +52,8 @@ const ProfilePage = () => {
 
   return (
     <PageShell
-      title="Student Profile"
-      subtitle="Manage your academic identity and advising preferences."
+      title={isAdvisor ? "Advisor Profile" : "Student Profile"}
+      subtitle={isAdvisor ? "Manage your advising account identity." : "Manage your academic identity and advising preferences."}
       className="page-profile"
       contentClassName="max-w-[88rem]"
       actions={
@@ -49,7 +63,51 @@ const ProfilePage = () => {
         </>
       }
     >
-      {!formState ? (
+      {isAdvisor ? (
+        <Card className="space-y-6 p-4 sm:space-y-8 sm:p-8 border-l-4 border-l-[var(--accent)]">
+          <div>
+            <p className="text-xs uppercase tracking-[0.28em] text-muted">Advisor snapshot</p>
+            <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+              <article className="soft-panel flex min-h-[128px] items-center gap-4 px-6 py-4">
+                <div className="grid h-12 w-12 place-items-center rounded-xl bg-[rgba(180,35,24,0.18)] text-[var(--accent)]">
+                  <UserRound size={24} />
+                </div>
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted">Advisor Name</p>
+                  <p className="text-lg font-bold text-[var(--text)]">{user?.name}</p>
+                </div>
+              </article>
+              <article className="soft-panel flex min-h-[128px] items-center gap-4 px-6 py-4">
+                <div className="grid h-12 w-12 place-items-center rounded-xl bg-[rgba(180,35,24,0.18)] text-[var(--accent)]">
+                  <Mail size={24} />
+                </div>
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted">University Email</p>
+                  <p className="text-lg font-bold text-[var(--text)]">{user?.email}</p>
+                </div>
+              </article>
+              <article className="soft-panel flex min-h-[128px] items-center gap-4 px-6 py-4">
+                <div className="grid h-12 w-12 place-items-center rounded-xl bg-[rgba(180,35,24,0.18)] text-[var(--accent)]">
+                  <GraduationCap size={24} />
+                </div>
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted">Department</p>
+                  <p className="text-lg font-bold text-[var(--text)]">{user?.department || 'Computer Science'}</p>
+                </div>
+              </article>
+              <article className="soft-panel flex min-h-[128px] items-center gap-4 px-6 py-4">
+                <div className="grid h-12 w-12 place-items-center rounded-xl bg-[rgba(180,35,24,0.18)] text-[var(--accent)]">
+                  <Sparkles size={24} />
+                </div>
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted">Role Security Level</p>
+                  <p className="text-lg font-bold text-[var(--text)]">Faculty System Admin</p>
+                </div>
+              </article>
+            </div>
+          </div>
+        </Card>
+      ) : !formState ? (
         <Card className="p-6">
           <p className="text-sm text-muted">Loading profile...</p>
         </Card>
@@ -71,7 +129,7 @@ const ProfilePage = () => {
                 },
                 {
                   label: 'Major',
-                  value: formState.major,
+                  value: MAJOR_NAMES[formState.major] || formState.major,
                   icon: GraduationCap
                 },
                 {

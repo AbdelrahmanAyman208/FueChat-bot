@@ -1,0 +1,47 @@
+course_code,course_name,program,level,semester,prerequisites,credits
+ENG101,English 1,Artificial Intelligence,Freshman,First,,2
+BMT111,Calculus,Artificial Intelligence,Freshman,First,,3
+BMT112,Discrete Mathematics,Artificial Intelligence,Freshman,First,,3
+BPH111,Physics,Artificial Intelligence,Freshman,First,,3
+CSC111,Computing Fundamentals,Artificial Intelligence,Freshman,First,,3
+PSC110,Human Rights,Artificial Intelligence,Freshman,First,,2
+ENG102,English 2,Artificial Intelligence,Freshman,Second,ENG101,2
+BMT121,Differential Equations,Artificial Intelligence,Freshman,Second,BMT111,3
+CSC121,Structured Programming,Artificial Intelligence,Freshman,Second,CSC111,3
+CPS121,Communication Skills and Report Writing,Artificial Intelligence,Freshman,Second,ENG101,2
+BMT122,Probability and Statistics,Artificial Intelligence,Freshman,Second,BMT111,3
+CSC122,Logic Design,Artificial Intelligence,Freshman,Second,BMT112,3
+CPS211,Ethics and Social Impacts of Computing,Artificial Intelligence,Sophomore,Third,,2
+CSC211,Object Oriented Programming,Artificial Intelligence,Sophomore,Third,CSC121,3
+BPH211,Advanced Physics,Artificial Intelligence,Sophomore,Third,BPH111,3
+BMT212,Linear Algebra,Artificial Intelligence,Sophomore,Third,BMT121,3
+ELEC_S3,Elective: Science & Ethics,Artificial Intelligence,Sophomore,Third,,2
+BMT211,Advanced Probability and Statistics,Artificial Intelligence,Sophomore,Third,BMT122,3
+CSC221,Advanced Programming,Artificial Intelligence,Sophomore,Fourth,CSC211,3
+CSC222,Data Structures,Artificial Intelligence,Sophomore,Fourth,CSC211,3
+CSC223,Software Engineering 1,Artificial Intelligence,Sophomore,Fourth,CSC211,3
+CSS221,Computer Networks,Artificial Intelligence,Sophomore,Fourth,CSC111 and BMT112,3
+ISI222,Database Systems 1,Artificial Intelligence,Sophomore,Fourth,CSC121,3
+ISI311,Modeling and Simulation,Artificial Intelligence,Junior,Fifth,BMT122,3
+CSA311,Artificial Intelligence Fundamentals,Artificial Intelligence,Junior,Fifth,CSC211,3
+CSS312,Computers and Information Security,Artificial Intelligence,Junior,Fifth,CSS221,3
+CSC311,Operating Systems 1,Artificial Intelligence,Junior,Fifth,CSC211,3
+CSC312,Analysis and Design of Algorithms,Artificial Intelligence,Junior,Fifth,CSC222,3
+CSA313,Image Processing,Artificial Intelligence,Junior,Fifth,BMT212 and CSC121,3
+CSC323,Computer Architecture,Artificial Intelligence,Junior,Sixth,CSC122,3
+CSA321,Machine Learning,Artificial Intelligence,Junior,Sixth,BMT122 and CSA311,3
+CSA322,Reasoning and Agents,Artificial Intelligence,Junior,Sixth,CSA311,3
+CSA423,Computer Vision,Artificial Intelligence,Junior,Sixth,CSA313 and CSA311,3
+CSA323,Artificial Intelligence Applications,Artificial Intelligence,Junior,Sixth,CSA311,3
+CSA324,Processing of Formal and Natural Language,Artificial Intelligence,Junior,Sixth,CSA311,3
+TR333,Summer Training,Artificial Intelligence,Junior,Summer,,3
+PR498,Project 1,Artificial Intelligence,Senior,Seventh,CSC223,3
+CSA411,Neural Networks and Deep Learning,Artificial Intelligence,Senior,Seventh,BMT121 and CSA311,3
+CSC412,Embedded Systems,Artificial Intelligence,Senior,Seventh,CSC323,3
+AI_ELEC_1,AI Program Elective 1,Artificial Intelligence,Senior,Seventh,Depends on selected elective,3
+AI_ELEC_2,AI Program Elective 2,Artificial Intelligence,Senior,Seventh,Depends on selected elective,3
+PR499,Project 2,Artificial Intelligence,Senior,Eighth,PR498,3
+CSA424,Reinforcement Learning,Artificial Intelligence,Senior,Eighth,CSA321,3
+CSA422,Intelligent Autonomous Robotics,Artificial Intelligence,Senior,Eighth,CSC412,3
+AI_ELEC_3,AI Program Elective 3,Artificial Intelligence,Senior,Eighth,Depends on selected elective,3
+AI_ELEC_4,AI Program Elective 4,Artificial Intelligence,Senior,Eighth,Depends on selected elective,3

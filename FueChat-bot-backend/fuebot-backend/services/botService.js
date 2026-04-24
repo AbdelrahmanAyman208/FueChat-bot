@@ -1,5 +1,5 @@
 const db = require('../config/db');
-const { AI_ENABLED, getAIResponse } = require('./aiService');
+const { AI_ENABLED, getAIResponseStream } = require('./aiService');
 
 /**
  * Loads a complete snapshot of the student's academic profile.
@@ -83,7 +83,7 @@ async function buildBotResponseStream(message, studentId, sessionId, res) {
     } catch (error) {
       // AI unavailable — fall through to keyword-based fallback
       console.warn(
-        `[AI] AI service error (falling back to keyword bot): ${error.message}`
+        `[AI] AI service error (falling back to keyword bot):`, error
       );
     }
   }

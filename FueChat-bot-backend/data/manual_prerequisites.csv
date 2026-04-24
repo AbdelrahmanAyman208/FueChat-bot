@@ -45,3 +45,233 @@ DMT323,Computer Graphics,Computer Science,Senior,Eighth,BMT212,3
 CSC422,Concepts of Programming Languages,Computer Science,Senior,Eighth,CSC221,3
 CS-ELECTIVE-4,Computer Science Program Elective - 4,Computer Science,Senior,Eighth,Depends on selected elective,3
 CS-ELECTIVE-5,Computer Science Program Elective - 5,Computer Science,Senior,Eighth,Depends on selected elective,3
+ENG101,English 1,Artificial Intelligence,Freshman,First,,2
+BMT111,Calculus,Artificial Intelligence,Freshman,First,,3
+BMT112,Discrete Mathematics,Artificial Intelligence,Freshman,First,,3
+BPH111,Physics,Artificial Intelligence,Freshman,First,,3
+CSC111,Computing Fundamentals,Artificial Intelligence,Freshman,First,,3
+PSC110,Human Rights,Artificial Intelligence,Freshman,First,,2
+ENG102,English 2,Artificial Intelligence,Freshman,Second,ENG101,2
+BMT121,Differential Equations,Artificial Intelligence,Freshman,Second,BMT111,3
+CSC121,Structured Programming,Artificial Intelligence,Freshman,Second,CSC111,3
+CPS121,Communication Skills and Report Writing,Artificial Intelligence,Freshman,Second,ENG101,2
+BMT122,Probability and Statistics,Artificial Intelligence,Freshman,Second,BMT111,3
+CSC122,Logic Design,Artificial Intelligence,Freshman,Second,BMT112,3
+CPS211,Ethics and Social Impacts of Computing,Artificial Intelligence,Sophomore,Third,,2
+CSC211,Object Oriented Programming,Artificial Intelligence,Sophomore,Third,CSC121,3
+BPH211,Advanced Physics,Artificial Intelligence,Sophomore,Third,BPH111,3
+BMT212,Linear Algebra,Artificial Intelligence,Sophomore,Third,BMT121,3
+ELEC_S3,Elective: Science & Ethics,Artificial Intelligence,Sophomore,Third,,2
+BMT211,Advanced Probability and Statistics,Artificial Intelligence,Sophomore,Third,BMT122,3
+CSC221,Advanced Programming,Artificial Intelligence,Sophomore,Fourth,CSC211,3
+CSC222,Data Structures,Artificial Intelligence,Sophomore,Fourth,CSC211,3
+CSC223,Software Engineering 1,Artificial Intelligence,Sophomore,Fourth,CSC211,3
+CSS221,Computer Networks,Artificial Intelligence,Sophomore,Fourth,CSC111 and BMT112,3
+ISI222,Database Systems 1,Artificial Intelligence,Sophomore,Fourth,CSC121,3
+ISI311,Modeling and Simulation,Artificial Intelligence,Junior,Fifth,BMT122,3
+CSA311,Artificial Intelligence Fundamentals,Artificial Intelligence,Junior,Fifth,CSC211,3
+CSS312,Computers and Information Security,Artificial Intelligence,Junior,Fifth,CSS221,3
+CSC311,Operating Systems 1,Artificial Intelligence,Junior,Fifth,CSC211,3
+CSC312,Analysis and Design of Algorithms,Artificial Intelligence,Junior,Fifth,CSC222,3
+CSA313,Image Processing,Artificial Intelligence,Junior,Fifth,BMT212 and CSC121,3
+CSC323,Computer Architecture,Artificial Intelligence,Junior,Sixth,CSC122,3
+CSA321,Machine Learning,Artificial Intelligence,Junior,Sixth,BMT122 and CSA311,3
+CSA322,Reasoning and Agents,Artificial Intelligence,Junior,Sixth,CSA311,3
+CSA423,Computer Vision,Artificial Intelligence,Junior,Sixth,CSA313 and CSA311,3
+CSA323,Artificial Intelligence Applications,Artificial Intelligence,Junior,Sixth,CSA311,3
+CSA324,Processing of Formal and Natural Language,Artificial Intelligence,Junior,Sixth,CSA311,3
+TR333,Summer Training,Artificial Intelligence,Junior,Summer,,3
+PR498,Project 1,Artificial Intelligence,Senior,Seventh,CSC223,3
+CSA411,Neural Networks and Deep Learning,Artificial Intelligence,Senior,Seventh,BMT121 and CSA311,3
+CSC412,Embedded Systems,Artificial Intelligence,Senior,Seventh,CSC323,3
+AI-ELECTIVE-1,AI Program Elective 1,Artificial Intelligence,Senior,Seventh,Depends on selected elective,3
+AI-ELECTIVE-2,AI Program Elective 2,Artificial Intelligence,Senior,Seventh,Depends on selected elective,3
+PR499,Project 2,Artificial Intelligence,Senior,Eighth,PR498,3
+CSA424,Reinforcement Learning,Artificial Intelligence,Senior,Eighth,CSA321,3
+CSA422,Intelligent Autonomous Robotics,Artificial Intelligence,Senior,Eighth,CSC412,3
+AI-ELECTIVE-3,AI Program Elective 3,Artificial Intelligence,Senior,Eighth,Depends on selected elective,3
+AI-ELECTIVE-4,AI Program Elective 4,Artificial Intelligence,Senior,Eighth,Depends on selected elective,3
+ENG101,English 1,Information Systems,Freshman,First,,2
+BMT111,Calculus,Information Systems,Freshman,First,,3
+BMT112,Discrete Mathematics,Information Systems,Freshman,First,,3
+BPH111,Physics,Information Systems,Freshman,First,,3
+CSC111,Computing Fundamentals,Information Systems,Freshman,First,,3
+PSC110,Human Rights,Information Systems,Freshman,First,,2
+ENG102,English 2,Information Systems,Freshman,Second,ENG101,2
+BMT121,Differential Equations,Information Systems,Freshman,Second,BMT111,3
+CSC121,Structured Programming,Information Systems,Freshman,Second,CSC111,3
+CPS121,Communication Skills and Report Writing,Information Systems,Freshman,Second,ENG101,2
+BMT122,Probability and Statistics,Information Systems,Freshman,Second,BMT111,3
+CSC122,Logic Design,Information Systems,Freshman,Second,BMT112,3
+CPS211,Ethics and Social Impacts of Computing,Information Systems,Sophomore,Third,,2
+CSC211,Object Oriented Programming,Information Systems,Sophomore,Third,CSC121,3
+ISI211,Introduction to Information Systems,Information Systems,Sophomore,Third,CSC111,3
+BMT212,Linear Algebra,Information Systems,Sophomore,Third,BMT121,3
+ELEC_S3,Elective: Science & Ethics,Information Systems,Sophomore,Third,,2
+BMT211,Advanced Probability and Statistics,Information Systems,Sophomore,Third,BMT122,3
+CSC221,Advanced Programming,Information Systems,Sophomore,Fourth,CSC211,3
+CSC222,Data Structures,Information Systems,Sophomore,Fourth,CSC211,3
+CSC223,Software Engineering 1,Information Systems,Sophomore,Fourth,CSC211,3
+CSS221,Computer Networks,Information Systems,Sophomore,Fourth,CSC111 and BMT112,3
+ISI222,Database Systems 1,Information Systems,Sophomore,Fourth,CSC121,3
+ISI311,Modeling and Simulation,Information Systems,Junior,Fifth,BMT122,3
+CSA311,Artificial Intelligence Fundamentals,Information Systems,Junior,Fifth,CSC211,3
+CSS312,Computers and Information Security,Information Systems,Junior,Fifth,CSS221,3
+ISI312,Systems Analysis and Design 1,Information Systems,Junior,Fifth,ISI211,3
+CSC312,Analysis and Design of Algorithms,Information Systems,Junior,Fifth,CSC222,3
+CSC311,Operating Systems 1,Information Systems,Junior,Fifth,CSC211,3
+CSC326,Web Applications Development,Information Systems,Junior,Sixth,CSC211 and ISI222,3
+ISI321,Database Systems 2,Information Systems,Junior,Sixth,ISI222,3
+ISI322,Information Storage and Retrieval,Information Systems,Junior,Sixth,ISI222,3
+ISI323,Geographical Information Systems,Information Systems,Junior,Sixth,ISI222,3
+ISI324,Software Project Management,Information Systems,Junior,Sixth,CSC223,3
+IS-ELECTIVE-1,Information Systems Program Elective 1,Information Systems,Junior,Sixth,Depends on selected elective,3
+TR333,Summer Training,Information Systems,Junior,Summer,,3
+PR498,Project 1,Information Systems,Senior,Seventh,CSC223,3
+ISI411,Management Information Systems,Information Systems,Senior,Seventh,ISI222,3
+ISI412,Data Mining and Data Warehousing,Information Systems,Senior,Seventh,ISI321,3
+ISI413,Enterprise Resource Planning,Information Systems,Senior,Seventh,ISI222,3
+IS-ELECTIVE-2,Information Systems Program Elective 2,Information Systems,Senior,Seventh,Depends on selected elective,3
+PR499,Project 2,Information Systems,Senior,Eighth,PR498,3
+ISI421,Decision Support Systems,Information Systems,Senior,Eighth,ISI321,3
+ISI422,Business Intelligence,Information Systems,Senior,Eighth,ISI412,3
+IS-ELECTIVE-3,Information Systems Program Elective 3,Information Systems,Senior,Eighth,Depends on selected elective,3
+IS-ELECTIVE-4,Information Systems Program Elective 4,Information Systems,Senior,Eighth,Depends on selected elective,3
+ENG101,English 1,Digital Media Technology,Freshman,First,,2
+BMT111,Calculus,Digital Media Technology,Freshman,First,,3
+BMT112,Discrete Mathematics,Digital Media Technology,Freshman,First,,3
+BPH111,Physics,Digital Media Technology,Freshman,First,,3
+CSC111,Computing Fundamentals,Digital Media Technology,Freshman,First,,3
+PSC110,Human Rights,Digital Media Technology,Freshman,First,,2
+ENG102,English 2,Digital Media Technology,Freshman,Second,ENG101,2
+BMT121,Differential Equations,Digital Media Technology,Freshman,Second,BMT111,3
+CSC121,Structured Programming,Digital Media Technology,Freshman,Second,CSC111,3
+CPS121,Communication Skills and Report Writing,Digital Media Technology,Freshman,Second,ENG101,2
+BMT122,Probability and Statistics,Digital Media Technology,Freshman,Second,BMT111,3
+CSC122,Logic Design,Digital Media Technology,Freshman,Second,BMT112,3
+CPS211,Ethics and Social Impacts of Computing,Digital Media Technology,Sophomore,Third,,2
+CSC211,Object Oriented Programming,Digital Media Technology,Sophomore,Third,CSC121,3
+DMT212,Introduction to Media Technology,Digital Media Technology,Sophomore,Third,CSC111,3
+BMT212,Linear Algebra,Digital Media Technology,Sophomore,Third,BMT121,3
+ELEC_S3,Elective: Science & Ethics,Digital Media Technology,Sophomore,Third,,2
+BMT211,Advanced Probability and Statistics,Digital Media Technology,Sophomore,Third,BMT122,3
+CSC221,Advanced Programming,Digital Media Technology,Sophomore,Fourth,CSC211,3
+CSC222,Data Structures,Digital Media Technology,Sophomore,Fourth,CSC211,3
+CSC223,Software Engineering 1,Digital Media Technology,Sophomore,Fourth,CSC211,3
+CSS221,Computer Networks,Digital Media Technology,Sophomore,Fourth,CSC111 and BMT112,3
+ISI222,Database Systems 1,Digital Media Technology,Sophomore,Fourth,CSC121,3
+ISI311,Modeling and Simulation,Digital Media Technology,Junior,Fifth,BMT122,3
+CSA311,Artificial Intelligence Fundamentals,Digital Media Technology,Junior,Fifth,CSC211,3
+CSS312,Computers and Information Security,Digital Media Technology,Junior,Fifth,CSS221,3
+DMT311,Digital Signal Processing,Digital Media Technology,Junior,Fifth,BMT121,3
+CSC312,Analysis and Design of Algorithms,Digital Media Technology,Junior,Fifth,CSC222,3
+CSC311,Operating Systems 1,Digital Media Technology,Junior,Fifth,CSC211,3
+CSC326,Web Applications Development,Digital Media Technology,Junior,Sixth,CSC211 and ISI222,3
+DMT322,Video and Audio Technology,Digital Media Technology,Junior,Sixth,DMT311,3
+DMT323,Computer Graphics,Digital Media Technology,Junior,Sixth,BMT212,3
+DMT324,Introduction to 2D Animation,Digital Media Technology,Junior,Sixth,DMT212,3
+DMT325,Character Design for Film and Games,Digital Media Technology,Junior,Sixth,DMT212,3
+DMT326,User Experience Design,Digital Media Technology,Junior,Sixth,CSC223,3
+TR333,Summer Training,Digital Media Technology,Junior,Summer,,3
+PR498,Project 1,Digital Media Technology,Senior,Seventh,CSC223,3
+DMT411,Introduction to 3D Animation,Digital Media Technology,Senior,Seventh,DMT324,3
+DMT412,Game Development,Digital Media Technology,Senior,Seventh,CSA311 and DMT324,3
+DMT-ELECTIVE-1,Digital Media Technology Program Elective 1,Digital Media Technology,Senior,Seventh,Depends on selected elective,3
+DMT-ELECTIVE-2,Digital Media Technology Program Elective 2,Digital Media Technology,Senior,Seventh,Depends on selected elective,3
+PR499,Project 2,Digital Media Technology,Senior,Eighth,PR498,3
+DMT421,Virtual Reality,Digital Media Technology,Senior,Eighth,DMT412,3
+DMT422,Augmented Reality,Digital Media Technology,Senior,Eighth,CSC211,3
+DMT-ELECTIVE-3,Digital Media Technology Program Elective 3,Digital Media Technology,Senior,Eighth,Depends on selected elective,3
+DMT-ELECTIVE-4,Digital Media Technology Program Elective 4,Digital Media Technology,Senior,Eighth,Depends on selected elective,3
+ENG101,English 1,Data Science,Freshman,First,,2
+BMT111,Calculus,Data Science,Freshman,First,,3
+BMT112,Discrete Mathematics,Data Science,Freshman,First,,3
+BPH111,Physics,Data Science,Freshman,First,,3
+CSC111,Computing Fundamentals,Data Science,Freshman,First,,3
+PSC110,Human Rights,Data Science,Freshman,First,,2
+ENG102,English 2,Data Science,Freshman,Second,ENG101,2
+BMT121,Differential Equations,Data Science,Freshman,Second,BMT111,3
+CSC121,Structured Programming,Data Science,Freshman,Second,CSC111,3
+CPS121,Communication Skills and Report Writing,Data Science,Freshman,Second,ENG101,2
+BMT122,Probability and Statistics,Data Science,Freshman,Second,BMT111,3
+CSC122,Logic Design,Data Science,Freshman,Second,BMT112,3
+CPS211,Ethics and Social Impacts of Computing,Data Science,Sophomore,Third,,2
+CSC211,Object Oriented Programming,Data Science,Sophomore,Third,CSC121,3
+ISD211,Fundamentals of Data Science,Data Science,Sophomore,Third,CSC111,3
+BMT212,Linear Algebra,Data Science,Sophomore,Third,BMT121,3
+ELEC_S3,Elective: Science & Ethics,Data Science,Sophomore,Third,,2
+BMT211,Advanced Probability and Statistics,Data Science,Sophomore,Third,BMT122,3
+CSC221,Advanced Programming,Data Science,Sophomore,Fourth,CSC211,3
+CSC222,Data Structures,Data Science,Sophomore,Fourth,CSC211,3
+CSC223,Software Engineering 1,Data Science,Sophomore,Fourth,CSC211,3
+CSS221,Computer Networks,Data Science,Sophomore,Fourth,CSC111 and BMT112,3
+ISI222,Database Systems 1,Data Science,Sophomore,Fourth,CSC121,3
+ISI311,Modeling and Simulation,Data Science,Junior,Fifth,BMT122,3
+CSA311,Artificial Intelligence Fundamentals,Data Science,Junior,Fifth,CSC211,3
+CSS312,Computers and Information Security,Data Science,Junior,Fifth,CSS221,3
+CSC311,Operating Systems 1,Data Science,Junior,Fifth,CSC211,3
+CSC312,Analysis and Design of Algorithms,Data Science,Junior,Fifth,CSC222,3
+ISD311,Data Wrangling and Knowledge Discovery,Data Science,Junior,Fifth,ISI222,3
+ISD321,Computational Statistics and Data Analysis,Data Science,Junior,Sixth,BMT211,3
+ISD322,Theory and Practice of Data Analysis,Data Science,Junior,Sixth,CSA311,3
+CSA321,Machine Learning,Data Science,Junior,Sixth,BMT122 and CSA311,3
+CSC326,Web Applications Development,Data Science,Junior,Sixth,CSC211 and ISI222,3
+DS-ELECTIVE-1,Data Science Program Elective 1,Data Science,Junior,Sixth,Depends on selected elective,3
+DS-ELECTIVE-2,Data Science Program Elective 2,Data Science,Junior,Sixth,Depends on selected elective,3
+TR333,Summer Training,Data Science,Junior,Summer,,3
+CSA411,Neural Networks and Deep Learning,Data Science,Senior,Seventh,BMT121 and CSA311,3
+ISD411,Big Data Analytics,Data Science,Senior,Seventh,ISD311 and ISD211,3
+ISD412,Applied Regression Methods,Data Science,Senior,Seventh,BMT212 and BMT211,3
+CSC411,Cloud Computing,Data Science,Senior,Seventh,CSC223 and CSS221,3
+PR498,Project 1,Data Science,Senior,Seventh,CSC223,3
+ISD421,Data Visualization and Exploration,Data Science,Senior,Eighth,ISD322,3
+ISD422,Applied Multivariate Analysis,Data Science,Senior,Eighth,ISD322,3
+DS-ELECTIVE-3,Data Science Program Elective 3,Data Science,Senior,Eighth,Depends on selected elective,3
+DS-ELECTIVE-4,Data Science Program Elective 4,Data Science,Senior,Eighth,Depends on selected elective,3
+PR499,Project 2,Data Science,Senior,Eighth,PR498,3
+ENG101,English 1,Cyber Security,Freshman,First,,2
+BMT111,Calculus,Cyber Security,Freshman,First,,3
+BMT112,Discrete Mathematics,Cyber Security,Freshman,First,,3
+BPH111,Physics,Cyber Security,Freshman,First,,3
+CSC111,Computing Fundamentals,Cyber Security,Freshman,First,,3
+PSC110,Human Rights,Cyber Security,Freshman,First,,2
+ENG102,English 2,Cyber Security,Freshman,Second,ENG101,2
+BMT121,Differential Equations,Cyber Security,Freshman,Second,BMT111,3
+CSC121,Structured Programming,Cyber Security,Freshman,Second,CSC111,3
+CPS121,Communication Skills and Report Writing,Cyber Security,Freshman,Second,ENG101,2
+BMT122,Probability and Statistics,Cyber Security,Freshman,Second,BMT111,3
+CSC122,Logic Design,Cyber Security,Freshman,Second,BMT112,3
+CPS211,Ethics and Social Impacts of Computing,Cyber Security,Sophomore,Third,,2
+CSC211,Object Oriented Programming,Cyber Security,Sophomore,Third,CSC121,3
+BMT213,Number Theory,Cyber Security,Sophomore,Third,BMT112,3
+BMT212,Linear Algebra,Cyber Security,Sophomore,Third,BMT121,3
+ELEC_S3,Elective: Science & Ethics,Cyber Security,Sophomore,Third,,2
+BMT211,Advanced Probability and Statistics,Cyber Security,Sophomore,Third,BMT122,3
+CSC221,Advanced Programming,Cyber Security,Sophomore,Fourth,CSC211,3
+CSC222,Data Structures,Cyber Security,Sophomore,Fourth,CSC211,3
+CSC223,Software Engineering 1,Cyber Security,Sophomore,Fourth,CSC211,3
+CSS221,Computer Networks,Cyber Security,Sophomore,Fourth,CSC111 and BMT112,3
+ISI222,Database Systems 1,Cyber Security,Sophomore,Fourth,CSC121,3
+CSS311,Cyber Security Fundamentals,Cyber Security,Junior,Fifth,CSS221,3
+CSA311,Artificial Intelligence Fundamentals,Cyber Security,Junior,Fifth,CSC211,3
+CSS312,Computers and Information Security,Cyber Security,Junior,Fifth,CSS221,3
+CSC311,Operating Systems 1,Cyber Security,Junior,Fifth,CSC211,3
+CSS313,Advanced Computer Networks,Cyber Security,Junior,Fifth,CSS221,3
+CSC312,Analysis and Design of Algorithms,Cyber Security,Junior,Fifth,CSC222,3
+CSS321,Cryptography and Network Security,Cyber Security,Junior,Sixth,BMT213 and CSS313,3
+CSC326,Web Applications Development,Cyber Security,Junior,Sixth,CSC211 and ISI222,3
+CSS322,Software Security,Cyber Security,Junior,Sixth,CSC221 and CSS312,3
+CSS323,Security Threats and Risk Analysis,Cyber Security,Junior,Sixth,CSS311,3
+CSS324,Ethical Hacking and Penetration Testing,Cyber Security,Junior,Sixth,CSS313,3
+CY-ELECTIVE-1,Cyber Security Program Elective 1,Cyber Security,Junior,Sixth,Depends on selected elective,3
+TR333,Summer Training,Cyber Security,Junior,Summer,,3
+PR498,Project 1,Cyber Security,Senior,Seventh,CSC223,3
+CSC411,Cloud Computing,Cyber Security,Senior,Seventh,CSC223 and CSS221,3
+CSS411,Digital Forensics,Cyber Security,Senior,Seventh,CSS322,3
+CY-ELECTIVE-2,Cyber Security Program Elective 2,Cyber Security,Senior,Seventh,Depends on selected elective,3
+CY-ELECTIVE-3,Cyber Security Program Elective 3,Cyber Security,Senior,Seventh,Depends on selected elective,3
+PR499,Project 2,Cyber Security,Senior,Eighth,PR498,3
+CSS421,Mobile and Wireless Security,Cyber Security,Senior,Eighth,CSS321,3
+CSS422,Cyber Security Incident Detection and Response,Cyber Security,Senior,Eighth,CSS323,3
+CY-ELECTIVE-4,Cyber Security Program Elective 4,Cyber Security,Senior,Eighth,Depends on selected elective,3
+CY-ELECTIVE-5,Cyber Security Program Elective 5,Cyber Security,Senior,Eighth,Depends on selected elective,3

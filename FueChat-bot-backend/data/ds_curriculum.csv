@@ -1,0 +1,47 @@
+course_code,course_name,program,level,semester,prerequisites,credits
+ENG101,English 1,Data Science,Freshman,First,,2
+BMT111,Calculus,Data Science,Freshman,First,,3
+BMT112,Discrete Mathematics,Data Science,Freshman,First,,3
+BPH111,Physics,Data Science,Freshman,First,,3
+CSC111,Computing Fundamentals,Data Science,Freshman,First,,3
+PSC110,Human Rights,Data Science,Freshman,First,,2
+ENG102,English 2,Data Science,Freshman,Second,ENG101,2
+BMT121,Differential Equations,Data Science,Freshman,Second,BMT111,3
+CSC121,Structured Programming,Data Science,Freshman,Second,CSC111,3
+CPS121,Communication Skills and Report Writing,Data Science,Freshman,Second,ENG101,2
+BMT122,Probability and Statistics,Data Science,Freshman,Second,BMT111,3
+CSC122,Logic Design,Data Science,Freshman,Second,BMT112,3
+CPS211,Ethics and Social Impacts of Computing,Data Science,Sophomore,Third,,2
+CSC211,Object Oriented Programming,Data Science,Sophomore,Third,CSC121,3
+ISD211,Fundamentals of Data Science,Data Science,Sophomore,Third,CSC111,3
+BMT212,Linear Algebra,Data Science,Sophomore,Third,BMT121,3
+ELEC_S3,Elective: Science & Ethics,Data Science,Sophomore,Third,,2
+BMT211,Advanced Probability and Statistics,Data Science,Sophomore,Third,BMT122,3
+CSC221,Advanced Programming,Data Science,Sophomore,Fourth,CSC211,3
+CSC222,Data Structures,Data Science,Sophomore,Fourth,CSC211,3
+CSC223,Software Engineering 1,Data Science,Sophomore,Fourth,CSC211,3
+CSS221,Computer Networks,Data Science,Sophomore,Fourth,CSC111 and BMT112,3
+ISI222,Database Systems 1,Data Science,Sophomore,Fourth,CSC121,3
+ISI311,Modeling and Simulation,Data Science,Junior,Fifth,BMT122,3
+CSA311,Artificial Intelligence Fundamentals,Data Science,Junior,Fifth,CSC211,3
+CSS312,Computers and Information Security,Data Science,Junior,Fifth,CSS221,3
+CSC311,Operating Systems 1,Data Science,Junior,Fifth,CSC211,3
+CSC312,Analysis and Design of Algorithms,Data Science,Junior,Fifth,CSC222,3
+ISD311,Data Wrangling and Knowledge Discovery,Data Science,Junior,Fifth,ISI222,3
+ISD321,Computational Statistics and Data Analysis,Data Science,Junior,Sixth,BMT211,3
+ISD322,Theory and Practice of Data Analysis,Data Science,Junior,Sixth,CSA311,3
+CSA321,Machine Learning,Data Science,Junior,Sixth,BMT122 and CSA311,3
+CSC326,Web Applications Development,Data Science,Junior,Sixth,CSC211 and ISI222,3
+DS-ELECTIVE-1,Data Science Program Elective 1,Data Science,Junior,Sixth,Depends on selected elective,3
+DS-ELECTIVE-2,Data Science Program Elective 2,Data Science,Junior,Sixth,Depends on selected elective,3
+TR333,Summer Training,Data Science,Junior,Summer,,3
+CSA411,Neural Networks and Deep Learning,Data Science,Senior,Seventh,BMT121 and CSA311,3
+ISD411,Big Data Analytics,Data Science,Senior,Seventh,ISD311 and ISD211,3
+ISD412,Applied Regression Methods,Data Science,Senior,Seventh,BMT212 and BMT211,3
+CSC411,Cloud Computing,Data Science,Senior,Seventh,CSC223 and CSS221,3
+PR498,Project 1,Data Science,Senior,Seventh,CSC223,3
+ISD421,Data Visualization and Exploration,Data Science,Senior,Eighth,ISD322,3
+ISD422,Applied Multivariate Analysis,Data Science,Senior,Eighth,ISD322,3
+DS-ELECTIVE-3,Data Science Program Elective 3,Data Science,Senior,Eighth,Depends on selected elective,3
+DS-ELECTIVE-4,Data Science Program Elective 4,Data Science,Senior,Eighth,Depends on selected elective,3
+PR499,Project 2,Data Science,Senior,Eighth,PR498,3

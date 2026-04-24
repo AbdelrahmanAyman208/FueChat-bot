@@ -1,0 +1,47 @@
+course_code,course_name,program,level,semester,prerequisites,credits
+ENG101,English 1,Digital Media Technology,Freshman,First,,2
+BMT111,Calculus,Digital Media Technology,Freshman,First,,3
+BMT112,Discrete Mathematics,Digital Media Technology,Freshman,First,,3
+BPH111,Physics,Digital Media Technology,Freshman,First,,3
+CSC111,Computing Fundamentals,Digital Media Technology,Freshman,First,,3
+PSC110,Human Rights,Digital Media Technology,Freshman,First,,2
+ENG102,English 2,Digital Media Technology,Freshman,Second,ENG101,2
+BMT121,Differential Equations,Digital Media Technology,Freshman,Second,BMT111,3
+CSC121,Structured Programming,Digital Media Technology,Freshman,Second,CSC111,3
+CPS121,Communication Skills and Report Writing,Digital Media Technology,Freshman,Second,ENG101,2
+BMT122,Probability and Statistics,Digital Media Technology,Freshman,Second,BMT111,3
+CSC122,Logic Design,Digital Media Technology,Freshman,Second,BMT112,3
+CPS211,Ethics and Social Impacts of Computing,Digital Media Technology,Sophomore,Third,,2
+CSC211,Object Oriented Programming,Digital Media Technology,Sophomore,Third,CSC121,3
+DMT212,Introduction to Media Technology,Digital Media Technology,Sophomore,Third,CSC111,3
+BMT212,Linear Algebra,Digital Media Technology,Sophomore,Third,BMT121,3
+ELEC_S3,Elective: Science & Ethics,Digital Media Technology,Sophomore,Third,,2
+BMT211,Advanced Probability and Statistics,Digital Media Technology,Sophomore,Third,BMT122,3
+CSC221,Advanced Programming,Digital Media Technology,Sophomore,Fourth,CSC211,3
+CSC222,Data Structures,Digital Media Technology,Sophomore,Fourth,CSC211,3
+CSC223,Software Engineering 1,Digital Media Technology,Sophomore,Fourth,CSC211,3
+CSS221,Computer Networks,Digital Media Technology,Sophomore,Fourth,CSC111 and BMT112,3
+ISI222,Database Systems 1,Digital Media Technology,Sophomore,Fourth,CSC121,3
+ISI311,Modeling and Simulation,Digital Media Technology,Junior,Fifth,BMT122,3
+CSA311,Artificial Intelligence Fundamentals,Digital Media Technology,Junior,Fifth,CSC211,3
+CSS312,Computers and Information Security,Digital Media Technology,Junior,Fifth,CSS221,3
+DMT311,Digital Signal Processing,Digital Media Technology,Junior,Fifth,BMT121,3
+CSC312,Analysis and Design of Algorithms,Digital Media Technology,Junior,Fifth,CSC222,3
+CSC311,Operating Systems 1,Digital Media Technology,Junior,Fifth,CSC211,3
+CSC326,Web Applications Development,Digital Media Technology,Junior,Sixth,CSC211 and ISI222,3
+DMT322,Video and Audio Technology,Digital Media Technology,Junior,Sixth,DMT311,3
+DMT323,Computer Graphics,Digital Media Technology,Junior,Sixth,BMT212,3
+DMT324,Introduction to 2D Animation,Digital Media Technology,Junior,Sixth,DMT212,3
+DMT325,Character Design for Film and Games,Digital Media Technology,Junior,Sixth,DMT212,3
+DMT326,User Experience Design,Digital Media Technology,Junior,Sixth,CSC223,3
+TR333,Summer Training,Digital Media Technology,Junior,Summer,,3
+PR498,Project 1,Digital Media Technology,Senior,Seventh,CSC223,3
+DMT411,Introduction to 3D Animation,Digital Media Technology,Senior,Seventh,DMT324,3
+DMT412,Game Development,Digital Media Technology,Senior,Seventh,CSA311 and DMT324,3
+DMT-ELECTIVE-1,Digital Media Technology Program Elective 1,Digital Media Technology,Senior,Seventh,Depends on selected elective,3
+DMT-ELECTIVE-2,Digital Media Technology Program Elective 2,Digital Media Technology,Senior,Seventh,Depends on selected elective,3
+PR499,Project 2,Digital Media Technology,Senior,Eighth,PR498,3
+DMT421,Virtual Reality,Digital Media Technology,Senior,Eighth,DMT412,3
+DMT422,Augmented Reality,Digital Media Technology,Senior,Eighth,CSC211,3
+DMT-ELECTIVE-3,Digital Media Technology Program Elective 3,Digital Media Technology,Senior,Eighth,Depends on selected elective,3
+DMT-ELECTIVE-4,Digital Media Technology Program Elective 4,Digital Media Technology,Senior,Eighth,Depends on selected elective,3

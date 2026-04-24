@@ -1,0 +1,47 @@
+course_code,course_name,program,level,semester,prerequisites,credits
+ENG101,English 1,Information Systems,Freshman,First,,2
+BMT111,Calculus,Information Systems,Freshman,First,,3
+BMT112,Discrete Mathematics,Information Systems,Freshman,First,,3
+BPH111,Physics,Information Systems,Freshman,First,,3
+CSC111,Computing Fundamentals,Information Systems,Freshman,First,,3
+PSC110,Human Rights,Information Systems,Freshman,First,,2
+ENG102,English 2,Information Systems,Freshman,Second,ENG101,2
+BMT121,Differential Equations,Information Systems,Freshman,Second,BMT111,3
+CSC121,Structured Programming,Information Systems,Freshman,Second,CSC111,3
+CPS121,Communication Skills and Report Writing,Information Systems,Freshman,Second,ENG101,2
+BMT122,Probability and Statistics,Information Systems,Freshman,Second,BMT111,3
+CSC122,Logic Design,Information Systems,Freshman,Second,BMT112,3
+CPS211,Ethics and Social Impacts of Computing,Information Systems,Sophomore,Third,,2
+CSC211,Object Oriented Programming,Information Systems,Sophomore,Third,CSC121,3
+ISI211,Introduction to Information Systems,Information Systems,Sophomore,Third,CSC111,3
+BMT212,Linear Algebra,Information Systems,Sophomore,Third,BMT121,3
+ELEC_S3,Elective: Science & Ethics,Information Systems,Sophomore,Third,,2
+BMT211,Advanced Probability and Statistics,Information Systems,Sophomore,Third,BMT122,3
+CSC221,Advanced Programming,Information Systems,Sophomore,Fourth,CSC211,3
+CSC222,Data Structures,Information Systems,Sophomore,Fourth,CSC211,3
+CSC223,Software Engineering 1,Information Systems,Sophomore,Fourth,CSC211,3
+CSS221,Computer Networks,Information Systems,Sophomore,Fourth,CSC111 and BMT112,3
+ISI222,Database Systems 1,Information Systems,Sophomore,Fourth,CSC121,3
+ISI311,Modeling and Simulation,Information Systems,Junior,Fifth,BMT122,3
+CSA311,Artificial Intelligence Fundamentals,Information Systems,Junior,Fifth,CSC211,3
+CSS312,Computers and Information Security,Information Systems,Junior,Fifth,CSS221,3
+ISI312,Systems Analysis and Design 1,Information Systems,Junior,Fifth,ISI211,3
+CSC312,Analysis and Design of Algorithms,Information Systems,Junior,Fifth,CSC222,3
+CSC311,Operating Systems 1,Information Systems,Junior,Fifth,CSC211,3
+CSC326,Web Applications Development,Information Systems,Junior,Sixth,CSC211 and ISI222,3
+ISI321,Database Systems 2,Information Systems,Junior,Sixth,ISI222,3
+ISI322,Information Storage and Retrieval,Information Systems,Junior,Sixth,ISI222,3
+ISI323,Geographical Information Systems,Information Systems,Junior,Sixth,ISI222,3
+ISI324,Software Project Management,Information Systems,Junior,Sixth,CSC223,3
+IS-ELECTIVE-1,Information Systems Program Elective 1,Information Systems,Junior,Sixth,Depends on selected elective,3
+TR333,Summer Training,Information Systems,Junior,Summer,,3
+PR498,Project 1,Information Systems,Senior,Seventh,CSC223,3
+ISI411,Management Information Systems,Information Systems,Senior,Seventh,ISI222,3
+ISI412,Data Mining and Data Warehousing,Information Systems,Senior,Seventh,ISI321,3
+ISI413,Enterprise Resource Planning,Information Systems,Senior,Seventh,ISI222,3
+IS-ELECTIVE-2,Information Systems Program Elective 2,Information Systems,Senior,Seventh,Depends on selected elective,3
+PR499,Project 2,Information Systems,Senior,Eighth,PR498,3
+ISI421,Decision Support Systems,Information Systems,Senior,Eighth,ISI321,3
+ISI422,Business Intelligence,Information Systems,Senior,Eighth,ISI412,3
+IS-ELECTIVE-3,Information Systems Program Elective 3,Information Systems,Senior,Eighth,Depends on selected elective,3
+IS-ELECTIVE-4,Information Systems Program Elective 4,Information Systems,Senior,Eighth,Depends on selected elective,3

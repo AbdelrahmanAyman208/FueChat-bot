@@ -1,0 +1,47 @@
+course_code,course_name,program,level,semester,prerequisites,credits
+ENG101,English 1,Cyber Security,Freshman,First,,2
+BMT111,Calculus,Cyber Security,Freshman,First,,3
+BMT112,Discrete Mathematics,Cyber Security,Freshman,First,,3
+BPH111,Physics,Cyber Security,Freshman,First,,3
+CSC111,Computing Fundamentals,Cyber Security,Freshman,First,,3
+PSC110,Human Rights,Cyber Security,Freshman,First,,2
+ENG102,English 2,Cyber Security,Freshman,Second,ENG101,2
+BMT121,Differential Equations,Cyber Security,Freshman,Second,BMT111,3
+CSC121,Structured Programming,Cyber Security,Freshman,Second,CSC111,3
+CPS121,Communication Skills and Report Writing,Cyber Security,Freshman,Second,ENG101,2
+BMT122,Probability and Statistics,Cyber Security,Freshman,Second,BMT111,3
+CSC122,Logic Design,Cyber Security,Freshman,Second,BMT112,3
+CPS211,Ethics and Social Impacts of Computing,Cyber Security,Sophomore,Third,,2
+CSC211,Object Oriented Programming,Cyber Security,Sophomore,Third,CSC121,3
+BMT213,Number Theory,Cyber Security,Sophomore,Third,BMT112,3
+BMT212,Linear Algebra,Cyber Security,Sophomore,Third,BMT121,3
+ELEC_S3,Elective: Science & Ethics,Cyber Security,Sophomore,Third,,2
+BMT211,Advanced Probability and Statistics,Cyber Security,Sophomore,Third,BMT122,3
+CSC221,Advanced Programming,Cyber Security,Sophomore,Fourth,CSC211,3
+CSC222,Data Structures,Cyber Security,Sophomore,Fourth,CSC211,3
+CSC223,Software Engineering 1,Cyber Security,Sophomore,Fourth,CSC211,3
+CSS221,Computer Networks,Cyber Security,Sophomore,Fourth,CSC111 and BMT112,3
+ISI222,Database Systems 1,Cyber Security,Sophomore,Fourth,CSC121,3
+CSS311,Cyber Security Fundamentals,Cyber Security,Junior,Fifth,CSS221,3
+CSA311,Artificial Intelligence Fundamentals,Cyber Security,Junior,Fifth,CSC211,3
+CSS312,Computers and Information Security,Cyber Security,Junior,Fifth,CSS221,3
+CSC311,Operating Systems 1,Cyber Security,Junior,Fifth,CSC211,3
+CSS313,Advanced Computer Networks,Cyber Security,Junior,Fifth,CSS221,3
+CSC312,Analysis and Design of Algorithms,Cyber Security,Junior,Fifth,CSC222,3
+CSS321,Cryptography and Network Security,Cyber Security,Junior,Sixth,BMT213 and CSS313,3
+CSC326,Web Applications Development,Cyber Security,Junior,Sixth,CSC211 and ISI222,3
+CSS322,Software Security,Cyber Security,Junior,Sixth,CSC221 and CSS312,3
+CSS323,Security Threats and Risk Analysis,Cyber Security,Junior,Sixth,CSS311,3
+CSS324,Ethical Hacking and Penetration Testing,Cyber Security,Junior,Sixth,CSS313,3
+CY-ELECTIVE-1,Cyber Security Program Elective 1,Cyber Security,Junior,Sixth,Depends on selected elective,3
+TR333,Summer Training,Cyber Security,Junior,Summer,,3
+PR498,Project 1,Cyber Security,Senior,Seventh,CSC223,3
+CSC411,Cloud Computing,Cyber Security,Senior,Seventh,CSC223 and CSS221,3
+CSS411,Digital Forensics,Cyber Security,Senior,Seventh,CSS322,3
+CY-ELECTIVE-2,Cyber Security Program Elective 2,Cyber Security,Senior,Seventh,Depends on selected elective,3
+CY-ELECTIVE-3,Cyber Security Program Elective 3,Cyber Security,Senior,Seventh,Depends on selected elective,3
+PR499,Project 2,Cyber Security,Senior,Eighth,PR498,3
+CSS421,Mobile and Wireless Security,Cyber Security,Senior,Eighth,CSS321,3
+CSS422,Cyber Security Incident Detection and Response,Cyber Security,Senior,Eighth,CSS323,3
+CY-ELECTIVE-4,Cyber Security Program Elective 4,Cyber Security,Senior,Eighth,Depends on selected elective,3
+CY-ELECTIVE-5,Cyber Security Program Elective 5,Cyber Security,Senior,Eighth,Depends on selected elective,3

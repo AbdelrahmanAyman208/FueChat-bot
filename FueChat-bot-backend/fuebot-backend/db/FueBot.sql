@@ -116,7 +116,11 @@ CREATE TABLE student_schedule_request (
 INSERT INTO degree_requirement (description, major, credits_needed, effective_date)
 VALUES
   ('Computer Science BSc 2024 plan', 'CS', 136, '2024-09-01'),
-  ('Information Systems BSc 2024 plan', 'IS', 136, '2024-09-01');
+  ('Information Systems BSc 2024 plan', 'IS', 136, '2024-09-01'),
+  ('Artificial Intelligence BSc 2024 plan', 'AI', 136, '2024-09-01'),
+  ('Digital Media Technology BSc 2024 plan', 'DM', 136, '2024-09-01'),
+  ('Data Science BSc 2024 plan', 'DS', 136, '2024-09-01'),
+  ('Cyber Security BSc 2024 plan', 'CY', 136, '2024-09-01');
 
 
 -- ══════════════════════════════════════════════════════════════
@@ -248,7 +252,127 @@ VALUES
   ('DMT323', 'Computer Graphics',                            'Graphics pipelines and rendering',            3, 'Dr. Amgad',   'Spring 2029'),
   ('CSC422', 'Concepts of Programming Languages',           'Paradigms: functional, logic, OOP',           3, 'Dr. Mona',    'Spring 2029'),
   ('CS_ELEC4', 'Computer Science Program Elective - 4',     'Program elective course',                     3, 'TBA',         'Spring 2029'),
-  ('CS_ELEC5', 'Computer Science Program Elective - 5',     'Program elective course',                     3, 'TBA',         'Spring 2029');
+  ('CS_ELEC5', 'Computer Science Program Elective - 5',     'Program elective course',                     3, 'TBA',         'Spring 2029'),
+
+  -- ── AI Department — Semester 3 (AI-specific elective) ───────
+  ('ELEC_S3', 'Elective: Science & Ethics',                 'Elective in science and ethics',              2, 'TBA',         'Fall 2026'),
+
+  -- ── AI Department — Semester 5 (AI-specific courses) ────────
+  ('CSA313',   'Image Processing',                          'Digital image processing techniques',          3, 'TBA',         'Fall 2027'),
+
+  -- ── AI Department — Semester 6 (AI-specific courses) ────────
+  ('CSA321',   'Machine Learning',                          'Supervised and unsupervised learning',         3, 'TBA',         'Spring 2028'),
+  ('CSA322',   'Reasoning and Agents',                      'Logical reasoning and intelligent agents',    3, 'TBA',         'Spring 2028'),
+  ('CSA423',   'Computer Vision',                           'Image recognition and visual understanding',  3, 'TBA',         'Spring 2028'),
+  ('CSA323',   'Artificial Intelligence Applications',      'Applied AI in real-world domains',            3, 'TBA',         'Spring 2028'),
+  ('CSA324',   'Processing of Formal and Natural Language', 'NLP and formal language processing',          3, 'TBA',         'Spring 2028'),
+
+  -- ── AI Department — Semester 7 (AI-specific courses) ────────
+  ('CSA411',   'Neural Networks and Deep Learning',         'Deep learning architectures and training',    3, 'TBA',         'Fall 2028'),
+  ('AI_ELEC1', 'AI Program Elective 1',                     'AI program elective course',                  3, 'TBA',         'Fall 2028'),
+  ('AI_ELEC2', 'AI Program Elective 2',                     'AI program elective course',                  3, 'TBA',         'Fall 2028'),
+
+  -- ── AI Department — Semester 8 (AI-specific courses) ────────
+  ('CSA424',   'Reinforcement Learning',                    'RL agents and policy optimization',           3, 'TBA',         'Spring 2029'),
+  ('CSA422',   'Intelligent Autonomous Robotics',           'Autonomous robot systems and control',        3, 'TBA',         'Spring 2029'),
+  ('AI_ELEC3', 'AI Program Elective 3',                     'AI program elective course',                  3, 'TBA',         'Spring 2029'),
+  ('AI_ELEC4', 'AI Program Elective 4',                     'AI program elective course',                  3, 'TBA',         'Spring 2029'),
+
+  -- ── IS Department — Semester 3 (IS-specific courses) ────────
+  ('ISI211',   'Introduction to Information Systems',        'Fundamentals of information systems',         3, 'TBA',         'Fall 2026'),
+
+  -- ── IS Department — Semester 5 (IS-specific courses) ────────
+  ('ISI312',   'Systems Analysis and Design 1',              'Requirements analysis and system design',     3, 'TBA',         'Fall 2027'),
+
+  -- ── IS Department — Semester 6 (IS-specific courses) ────────
+  ('ISI321',   'Database Systems 2',                         'Advanced database concepts and NoSQL',        3, 'TBA',         'Spring 2028'),
+  ('ISI322',   'Information Storage and Retrieval',          'Search engines and information retrieval',    3, 'TBA',         'Spring 2028'),
+  ('ISI323',   'Geographical Information Systems',           'GIS concepts and spatial databases',          3, 'TBA',         'Spring 2028'),
+  ('ISI324',   'Software Project Management',                'Project planning, scheduling, and control',   3, 'TBA',         'Spring 2028'),
+  ('IS_ELEC1', 'Information Systems Program Elective 1',     'IS program elective course',                  3, 'TBA',         'Spring 2028'),
+
+  -- ── IS Department — Semester 7 (IS-specific courses) ────────
+  ('ISI411',   'Management Information Systems',             'MIS concepts and enterprise systems',         3, 'TBA',         'Fall 2028'),
+  ('ISI412',   'Data Mining and Data Warehousing',           'Data mining techniques and warehousing',      3, 'TBA',         'Fall 2028'),
+  ('ISI413',   'Enterprise Resource Planning',               'ERP systems and business processes',          3, 'TBA',         'Fall 2028'),
+  ('IS_ELEC2', 'Information Systems Program Elective 2',     'IS program elective course',                  3, 'TBA',         'Fall 2028'),
+
+  -- ── IS Department — Semester 8 (IS-specific courses) ────────
+  ('ISI421',   'Decision Support Systems',                   'DSS architectures and decision modeling',     3, 'TBA',         'Spring 2029'),
+  ('ISI422',   'Business Intelligence',                      'BI tools, analytics, and dashboards',         3, 'TBA',         'Spring 2029'),
+  ('IS_ELEC3', 'Information Systems Program Elective 3',     'IS program elective course',                  3, 'TBA',         'Spring 2029'),
+  ('IS_ELEC4', 'Information Systems Program Elective 4',     'IS program elective course',                  3, 'TBA',         'Spring 2029'),
+
+  -- ── DMT Department — Semester 3 (DMT-specific courses) ──────
+  ('DMT212',    'Introduction to Media Technology',            'Fundamentals of digital media',               3, 'TBA',         'Fall 2026'),
+
+  -- ── DMT Department — Semester 5 (DMT-specific courses) ──────
+  ('DMT311',    'Digital Signal Processing',                   'Signal analysis and digital filters',         3, 'TBA',         'Fall 2027'),
+
+  -- ── DMT Department — Semester 6 (DMT-specific courses) ──────
+  ('DMT322',    'Video and Audio Technology',                  'Multimedia processing and encoding',          3, 'TBA',         'Spring 2028'),
+  ('DMT324',    'Introduction to 2D Animation',                '2D animation principles and tools',           3, 'TBA',         'Spring 2028'),
+  ('DMT325',    'Character Design for Film and Games',         'Character art and design pipelines',          3, 'TBA',         'Spring 2028'),
+  ('DMT326',    'User Experience Design',                      'UX research, wireframing, and prototyping',   3, 'TBA',         'Spring 2028'),
+
+  -- ── DMT Department — Semester 7 (DMT-specific courses) ──────
+  ('DMT411',    'Introduction to 3D Animation',                '3D modeling, rigging, and animation',         3, 'TBA',         'Fall 2028'),
+  ('DMT412',    'Game Development',                            'Game engines, mechanics, and design',         3, 'TBA',         'Fall 2028'),
+  ('DMT_ELEC1', 'Digital Media Technology Program Elective 1', 'DMT program elective course',                 3, 'TBA',         'Fall 2028'),
+  ('DMT_ELEC2', 'Digital Media Technology Program Elective 2', 'DMT program elective course',                 3, 'TBA',         'Fall 2028'),
+
+  -- ── DMT Department — Semester 8 (DMT-specific courses) ──────
+  ('DMT421',    'Virtual Reality',                             'VR systems and immersive experiences',        3, 'TBA',         'Spring 2029'),
+  ('DMT422',    'Augmented Reality',                           'AR frameworks and applications',              3, 'TBA',         'Spring 2029'),
+  ('DMT_ELEC3', 'Digital Media Technology Program Elective 3', 'DMT program elective course',                 3, 'TBA',         'Spring 2029'),
+  ('DMT_ELEC4', 'Digital Media Technology Program Elective 4', 'DMT program elective course',                 3, 'TBA',         'Spring 2029'),
+
+  -- ── DS Department — Semester 3 (DS-specific courses) ───────
+  ('ISD211',    'Fundamentals of Data Science',                'Introduction to data science concepts',       3, 'TBA',         'Fall 2026'),
+
+  -- ── DS Department — Semester 5 (DS-specific courses) ───────
+  ('ISD311',    'Data Wrangling and Knowledge Discovery',      'Data cleaning, ETL, and knowledge mining',    3, 'TBA',         'Fall 2027'),
+
+  -- ── DS Department — Semester 6 (DS-specific courses) ───────
+  ('ISD321',    'Computational Statistics and Data Analysis',  'Statistical computing and inference',         3, 'TBA',         'Spring 2028'),
+  ('ISD322',    'Theory and Practice of Data Analysis',        'Analytical frameworks and methodology',       3, 'TBA',         'Spring 2028'),
+  ('DS_ELEC1',  'Data Science Program Elective 1',             'DS program elective course',                  3, 'TBA',         'Spring 2028'),
+  ('DS_ELEC2',  'Data Science Program Elective 2',             'DS program elective course',                  3, 'TBA',         'Spring 2028'),
+
+  -- ── DS Department — Semester 7 (DS-specific courses) ───────
+  ('ISD411',    'Big Data Analytics',                          'Hadoop, Spark, and large-scale analytics',    3, 'TBA',         'Fall 2028'),
+  ('ISD412',    'Applied Regression Methods',                  'Linear, logistic, and advanced regression',   3, 'TBA',         'Fall 2028'),
+
+  -- ── DS Department — Semester 8 (DS-specific courses) ───────
+  ('ISD421',    'Data Visualization and Exploration',          'Dashboards, charts, and exploratory analysis',3, 'TBA',         'Spring 2029'),
+  ('ISD422',    'Applied Multivariate Analysis',               'PCA, factor analysis, and clustering',        3, 'TBA',         'Spring 2029'),
+  ('DS_ELEC3',  'Data Science Program Elective 3',             'DS program elective course',                  3, 'TBA',         'Spring 2029'),
+  ('DS_ELEC4',  'Data Science Program Elective 4',             'DS program elective course',                  3, 'TBA',         'Spring 2029'),
+
+  -- ── CY Department — Semester 3 (CY-specific courses) ───────
+  ('BMT213',    'Number Theory',                               'Number theory for cryptography',              3, 'TBA',         'Fall 2026'),
+
+  -- ── CY Department — Semester 5 (CY-specific courses) ───────
+  ('CSS311',    'Cyber Security Fundamentals',                 'Core cybersecurity principles',               3, 'TBA',         'Fall 2027'),
+  ('CSS313',    'Advanced Computer Networks',                   'Network protocols and advanced routing',      3, 'TBA',         'Fall 2027'),
+
+  -- ── CY Department — Semester 6 (CY-specific courses) ───────
+  ('CSS321',    'Cryptography and Network Security',           'Encryption algorithms and secure comms',      3, 'TBA',         'Spring 2028'),
+  ('CSS322',    'Software Security',                           'Secure coding and vulnerability analysis',    3, 'TBA',         'Spring 2028'),
+  ('CSS323',    'Security Threats and Risk Analysis',           'Threat modeling and risk assessment',         3, 'TBA',         'Spring 2028'),
+  ('CSS324',    'Ethical Hacking and Penetration Testing',      'Pen testing methodologies and tools',         3, 'TBA',         'Spring 2028'),
+  ('CY_ELEC1',  'Cyber Security Program Elective 1',           'CY program elective course',                  3, 'TBA',         'Spring 2028'),
+
+  -- ── CY Department — Semester 7 (CY-specific courses) ───────
+  ('CSS411',    'Digital Forensics',                           'Forensic analysis and evidence handling',     3, 'TBA',         'Fall 2028'),
+  ('CY_ELEC2',  'Cyber Security Program Elective 2',           'CY program elective course',                  3, 'TBA',         'Fall 2028'),
+  ('CY_ELEC3',  'Cyber Security Program Elective 3',           'CY program elective course',                  3, 'TBA',         'Fall 2028'),
+
+  -- ── CY Department — Semester 8 (CY-specific courses) ───────
+  ('CSS421',    'Mobile and Wireless Security',                'Wireless protocols and mobile security',      3, 'TBA',         'Spring 2029'),
+  ('CSS422',    'Cyber Security Incident Detection and Response','SIEM, IR, and incident management',          3, 'TBA',         'Spring 2029'),
+  ('CY_ELEC4',  'Cyber Security Program Elective 4',           'CY program elective course',                  3, 'TBA',         'Spring 2029'),
+  ('CY_ELEC5',  'Cyber Security Program Elective 5',           'CY program elective course',                  3, 'TBA',         'Spring 2029');
 
 
 -- ══════════════════════════════════════════════════════════════
@@ -387,6 +511,245 @@ INSERT INTO course_prerequisite (course_id, prereq_course_id)
 -- CSC422 requires CSC221
 INSERT INTO course_prerequisite (course_id, prereq_course_id)
   SELECT c.course_id, p.course_id FROM course c, course p WHERE c.code='CSC422' AND p.code='CSC221';
+
+
+-- ══════════════════════════════════════════════════════════════
+-- 6b. SEED DATA — AI Department Prerequisites
+-- ══════════════════════════════════════════════════════════════
+
+-- CSA313 (Image Processing) requires BMT212 AND CSC121
+INSERT INTO course_prerequisite (course_id, prereq_course_id)
+  SELECT c.course_id, p.course_id FROM course c, course p WHERE c.code='CSA313' AND p.code='BMT212';
+INSERT INTO course_prerequisite (course_id, prereq_course_id)
+  SELECT c.course_id, p.course_id FROM course c, course p WHERE c.code='CSA313' AND p.code='CSC121';
+
+-- CSA321 (Machine Learning) requires BMT122 AND CSA311
+INSERT INTO course_prerequisite (course_id, prereq_course_id)
+  SELECT c.course_id, p.course_id FROM course c, course p WHERE c.code='CSA321' AND p.code='BMT122';
+INSERT INTO course_prerequisite (course_id, prereq_course_id)
+  SELECT c.course_id, p.course_id FROM course c, course p WHERE c.code='CSA321' AND p.code='CSA311';
+
+-- CSA322 (Reasoning and Agents) requires CSA311
+INSERT INTO course_prerequisite (course_id, prereq_course_id)
+  SELECT c.course_id, p.course_id FROM course c, course p WHERE c.code='CSA322' AND p.code='CSA311';
+
+-- CSA423 (Computer Vision) requires CSA313 AND CSA311
+INSERT INTO course_prerequisite (course_id, prereq_course_id)
+  SELECT c.course_id, p.course_id FROM course c, course p WHERE c.code='CSA423' AND p.code='CSA313';
+INSERT INTO course_prerequisite (course_id, prereq_course_id)
+  SELECT c.course_id, p.course_id FROM course c, course p WHERE c.code='CSA423' AND p.code='CSA311';
+
+-- CSA323 (AI Applications) requires CSA311
+INSERT INTO course_prerequisite (course_id, prereq_course_id)
+  SELECT c.course_id, p.course_id FROM course c, course p WHERE c.code='CSA323' AND p.code='CSA311';
+
+-- CSA324 (Processing of Formal and Natural Language) requires CSA311
+INSERT INTO course_prerequisite (course_id, prereq_course_id)
+  SELECT c.course_id, p.course_id FROM course c, course p WHERE c.code='CSA324' AND p.code='CSA311';
+
+-- CSA411 (Neural Networks and Deep Learning) requires BMT121 AND CSA311
+INSERT INTO course_prerequisite (course_id, prereq_course_id)
+  SELECT c.course_id, p.course_id FROM course c, course p WHERE c.code='CSA411' AND p.code='BMT121';
+INSERT INTO course_prerequisite (course_id, prereq_course_id)
+  SELECT c.course_id, p.course_id FROM course c, course p WHERE c.code='CSA411' AND p.code='CSA311';
+
+-- CSC311 (Operating Systems 1) requires CSC211 (AI curriculum adds this prereq)
+INSERT INTO course_prerequisite (course_id, prereq_course_id)
+  SELECT c.course_id, p.course_id FROM course c, course p WHERE c.code='CSC311' AND p.code='CSC211';
+
+-- CSA424 (Reinforcement Learning) requires CSA321
+INSERT INTO course_prerequisite (course_id, prereq_course_id)
+  SELECT c.course_id, p.course_id FROM course c, course p WHERE c.code='CSA424' AND p.code='CSA321';
+
+-- CSA422 (Intelligent Autonomous Robotics) requires CSC412
+INSERT INTO course_prerequisite (course_id, prereq_course_id)
+  SELECT c.course_id, p.course_id FROM course c, course p WHERE c.code='CSA422' AND p.code='CSC412';
+
+
+-- ══════════════════════════════════════════════════════════════
+-- 6c. SEED DATA — IS Department Prerequisites
+-- ══════════════════════════════════════════════════════════════
+
+-- ISI211 (Introduction to Information Systems) requires CSC111
+INSERT INTO course_prerequisite (course_id, prereq_course_id)
+  SELECT c.course_id, p.course_id FROM course c, course p WHERE c.code='ISI211' AND p.code='CSC111';
+
+-- ISI312 (Systems Analysis and Design 1) requires ISI211
+INSERT INTO course_prerequisite (course_id, prereq_course_id)
+  SELECT c.course_id, p.course_id FROM course c, course p WHERE c.code='ISI312' AND p.code='ISI211';
+
+-- ISI321 (Database Systems 2) requires ISI222
+INSERT INTO course_prerequisite (course_id, prereq_course_id)
+  SELECT c.course_id, p.course_id FROM course c, course p WHERE c.code='ISI321' AND p.code='ISI222';
+
+-- ISI322 (Information Storage and Retrieval) requires ISI222
+INSERT INTO course_prerequisite (course_id, prereq_course_id)
+  SELECT c.course_id, p.course_id FROM course c, course p WHERE c.code='ISI322' AND p.code='ISI222';
+
+-- ISI323 (Geographical Information Systems) requires ISI222
+INSERT INTO course_prerequisite (course_id, prereq_course_id)
+  SELECT c.course_id, p.course_id FROM course c, course p WHERE c.code='ISI323' AND p.code='ISI222';
+
+-- ISI324 (Software Project Management) requires CSC223
+INSERT INTO course_prerequisite (course_id, prereq_course_id)
+  SELECT c.course_id, p.course_id FROM course c, course p WHERE c.code='ISI324' AND p.code='CSC223';
+
+-- ISI411 (Management Information Systems) requires ISI222
+INSERT INTO course_prerequisite (course_id, prereq_course_id)
+  SELECT c.course_id, p.course_id FROM course c, course p WHERE c.code='ISI411' AND p.code='ISI222';
+
+-- ISI412 (Data Mining and Data Warehousing) requires ISI321
+INSERT INTO course_prerequisite (course_id, prereq_course_id)
+  SELECT c.course_id, p.course_id FROM course c, course p WHERE c.code='ISI412' AND p.code='ISI321';
+
+-- ISI413 (Enterprise Resource Planning) requires ISI222
+INSERT INTO course_prerequisite (course_id, prereq_course_id)
+  SELECT c.course_id, p.course_id FROM course c, course p WHERE c.code='ISI413' AND p.code='ISI222';
+
+-- ISI421 (Decision Support Systems) requires ISI321
+INSERT INTO course_prerequisite (course_id, prereq_course_id)
+  SELECT c.course_id, p.course_id FROM course c, course p WHERE c.code='ISI421' AND p.code='ISI321';
+
+-- ISI422 (Business Intelligence) requires ISI412
+INSERT INTO course_prerequisite (course_id, prereq_course_id)
+  SELECT c.course_id, p.course_id FROM course c, course p WHERE c.code='ISI422' AND p.code='ISI412';
+
+
+-- ══════════════════════════════════════════════════════════════
+-- 6d. SEED DATA — DMT Department Prerequisites
+-- ══════════════════════════════════════════════════════════════
+
+-- DMT212 (Introduction to Media Technology) requires CSC111
+INSERT INTO course_prerequisite (course_id, prereq_course_id)
+  SELECT c.course_id, p.course_id FROM course c, course p WHERE c.code='DMT212' AND p.code='CSC111';
+
+-- DMT311 (Digital Signal Processing) requires BMT121
+INSERT INTO course_prerequisite (course_id, prereq_course_id)
+  SELECT c.course_id, p.course_id FROM course c, course p WHERE c.code='DMT311' AND p.code='BMT121';
+
+-- DMT322 (Video and Audio Technology) requires DMT311
+INSERT INTO course_prerequisite (course_id, prereq_course_id)
+  SELECT c.course_id, p.course_id FROM course c, course p WHERE c.code='DMT322' AND p.code='DMT311';
+
+-- DMT324 (Introduction to 2D Animation) requires DMT212
+INSERT INTO course_prerequisite (course_id, prereq_course_id)
+  SELECT c.course_id, p.course_id FROM course c, course p WHERE c.code='DMT324' AND p.code='DMT212';
+
+-- DMT325 (Character Design for Film and Games) requires DMT212
+INSERT INTO course_prerequisite (course_id, prereq_course_id)
+  SELECT c.course_id, p.course_id FROM course c, course p WHERE c.code='DMT325' AND p.code='DMT212';
+
+-- DMT326 (User Experience Design) requires CSC223
+INSERT INTO course_prerequisite (course_id, prereq_course_id)
+  SELECT c.course_id, p.course_id FROM course c, course p WHERE c.code='DMT326' AND p.code='CSC223';
+
+-- DMT411 (Introduction to 3D Animation) requires DMT324
+INSERT INTO course_prerequisite (course_id, prereq_course_id)
+  SELECT c.course_id, p.course_id FROM course c, course p WHERE c.code='DMT411' AND p.code='DMT324';
+
+-- DMT412 (Game Development) requires CSA311 AND DMT324
+INSERT INTO course_prerequisite (course_id, prereq_course_id)
+  SELECT c.course_id, p.course_id FROM course c, course p WHERE c.code='DMT412' AND p.code='CSA311';
+INSERT INTO course_prerequisite (course_id, prereq_course_id)
+  SELECT c.course_id, p.course_id FROM course c, course p WHERE c.code='DMT412' AND p.code='DMT324';
+
+-- DMT421 (Virtual Reality) requires DMT412
+INSERT INTO course_prerequisite (course_id, prereq_course_id)
+  SELECT c.course_id, p.course_id FROM course c, course p WHERE c.code='DMT421' AND p.code='DMT412';
+
+-- DMT422 (Augmented Reality) requires CSC211
+INSERT INTO course_prerequisite (course_id, prereq_course_id)
+  SELECT c.course_id, p.course_id FROM course c, course p WHERE c.code='DMT422' AND p.code='CSC211';
+
+
+-- ══════════════════════════════════════════════════════════════
+-- 6e. SEED DATA — DS Department Prerequisites
+-- ══════════════════════════════════════════════════════════════
+
+-- ISD211 (Fundamentals of Data Science) requires CSC111
+INSERT INTO course_prerequisite (course_id, prereq_course_id)
+  SELECT c.course_id, p.course_id FROM course c, course p WHERE c.code='ISD211' AND p.code='CSC111';
+
+-- ISD311 (Data Wrangling and Knowledge Discovery) requires ISI222
+INSERT INTO course_prerequisite (course_id, prereq_course_id)
+  SELECT c.course_id, p.course_id FROM course c, course p WHERE c.code='ISD311' AND p.code='ISI222';
+
+-- ISD321 (Computational Statistics and Data Analysis) requires BMT211
+INSERT INTO course_prerequisite (course_id, prereq_course_id)
+  SELECT c.course_id, p.course_id FROM course c, course p WHERE c.code='ISD321' AND p.code='BMT211';
+
+-- ISD322 (Theory and Practice of Data Analysis) requires CSA311
+INSERT INTO course_prerequisite (course_id, prereq_course_id)
+  SELECT c.course_id, p.course_id FROM course c, course p WHERE c.code='ISD322' AND p.code='CSA311';
+
+-- ISD411 (Big Data Analytics) requires ISD311 AND ISD211
+INSERT INTO course_prerequisite (course_id, prereq_course_id)
+  SELECT c.course_id, p.course_id FROM course c, course p WHERE c.code='ISD411' AND p.code='ISD311';
+INSERT INTO course_prerequisite (course_id, prereq_course_id)
+  SELECT c.course_id, p.course_id FROM course c, course p WHERE c.code='ISD411' AND p.code='ISD211';
+
+-- ISD412 (Applied Regression Methods) requires BMT212 AND BMT211
+INSERT INTO course_prerequisite (course_id, prereq_course_id)
+  SELECT c.course_id, p.course_id FROM course c, course p WHERE c.code='ISD412' AND p.code='BMT212';
+INSERT INTO course_prerequisite (course_id, prereq_course_id)
+  SELECT c.course_id, p.course_id FROM course c, course p WHERE c.code='ISD412' AND p.code='BMT211';
+
+-- ISD421 (Data Visualization and Exploration) requires ISD322
+INSERT INTO course_prerequisite (course_id, prereq_course_id)
+  SELECT c.course_id, p.course_id FROM course c, course p WHERE c.code='ISD421' AND p.code='ISD322';
+
+-- ISD422 (Applied Multivariate Analysis) requires ISD322
+INSERT INTO course_prerequisite (course_id, prereq_course_id)
+  SELECT c.course_id, p.course_id FROM course c, course p WHERE c.code='ISD422' AND p.code='ISD322';
+
+
+-- ══════════════════════════════════════════════════════════════
+-- 6f. SEED DATA — CY Department Prerequisites
+-- ══════════════════════════════════════════════════════════════
+
+-- BMT213 (Number Theory) requires BMT112
+INSERT INTO course_prerequisite (course_id, prereq_course_id)
+  SELECT c.course_id, p.course_id FROM course c, course p WHERE c.code='BMT213' AND p.code='BMT112';
+
+-- CSS311 (Cyber Security Fundamentals) requires CSS221
+INSERT INTO course_prerequisite (course_id, prereq_course_id)
+  SELECT c.course_id, p.course_id FROM course c, course p WHERE c.code='CSS311' AND p.code='CSS221';
+
+-- CSS313 (Advanced Computer Networks) requires CSS221
+INSERT INTO course_prerequisite (course_id, prereq_course_id)
+  SELECT c.course_id, p.course_id FROM course c, course p WHERE c.code='CSS313' AND p.code='CSS221';
+
+-- CSS321 (Cryptography and Network Security) requires BMT213 AND CSS313
+INSERT INTO course_prerequisite (course_id, prereq_course_id)
+  SELECT c.course_id, p.course_id FROM course c, course p WHERE c.code='CSS321' AND p.code='BMT213';
+INSERT INTO course_prerequisite (course_id, prereq_course_id)
+  SELECT c.course_id, p.course_id FROM course c, course p WHERE c.code='CSS321' AND p.code='CSS313';
+
+-- CSS322 (Software Security) requires CSC221 AND CSS312
+INSERT INTO course_prerequisite (course_id, prereq_course_id)
+  SELECT c.course_id, p.course_id FROM course c, course p WHERE c.code='CSS322' AND p.code='CSC221';
+INSERT INTO course_prerequisite (course_id, prereq_course_id)
+  SELECT c.course_id, p.course_id FROM course c, course p WHERE c.code='CSS322' AND p.code='CSS312';
+
+-- CSS323 (Security Threats and Risk Analysis) requires CSS311
+INSERT INTO course_prerequisite (course_id, prereq_course_id)
+  SELECT c.course_id, p.course_id FROM course c, course p WHERE c.code='CSS323' AND p.code='CSS311';
+
+-- CSS324 (Ethical Hacking and Penetration Testing) requires CSS313
+INSERT INTO course_prerequisite (course_id, prereq_course_id)
+  SELECT c.course_id, p.course_id FROM course c, course p WHERE c.code='CSS324' AND p.code='CSS313';
+
+-- CSS411 (Digital Forensics) requires CSS322
+INSERT INTO course_prerequisite (course_id, prereq_course_id)
+  SELECT c.course_id, p.course_id FROM course c, course p WHERE c.code='CSS411' AND p.code='CSS322';
+
+-- CSS421 (Mobile and Wireless Security) requires CSS321
+INSERT INTO course_prerequisite (course_id, prereq_course_id)
+  SELECT c.course_id, p.course_id FROM course c, course p WHERE c.code='CSS421' AND p.code='CSS321';
+
+-- CSS422 (Cyber Security Incident Detection and Response) requires CSS323
+INSERT INTO course_prerequisite (course_id, prereq_course_id)
+  SELECT c.course_id, p.course_id FROM course c, course p WHERE c.code='CSS422' AND p.code='CSS323';
 
 
 -- ══════════════════════════════════════════════════════════════
