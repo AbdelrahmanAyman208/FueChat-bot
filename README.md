@@ -29,7 +29,7 @@ The project consists of three main microservices:
 ## Technical Specifications
 
 - **Database Credentials**: PostgreSQL runs on port `5432` with database `fuebot_db`.
-- **Node Server**: Runs on `http://localhost:5000`. Environment secrets (like email SMTP and DB strings) are configured in the `.env`.
+- **Node Server**: Runs on `http://localhost:8080`. Environment secrets (like email SMTP and DB strings) are configured in the `.env`.
 - **Python Fast API**: Runs internally on `http://127.0.0.1:8000`.
 - **React Frontend**: Development server accessible on `http://localhost:3000`.
 

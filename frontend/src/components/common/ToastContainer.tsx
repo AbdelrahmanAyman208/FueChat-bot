@@ -9,7 +9,7 @@ const ToastContainer = () => {
 
   useEffect(() => {
     const timers = toasts.map((toast) =>
-      setTimeout(() => dispatch(removeToast(toast.id)), 5000)
+      setTimeout(() => dispatch(removeToast(toast.id)), 8080)
     );
     return () => {
       timers.forEach((timer) => clearTimeout(timer));

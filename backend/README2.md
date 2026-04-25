@@ -10,7 +10,7 @@ FueBot is a **two-server system** that provides AI-powered academic advising for
 
 | Server | Technology | Port | Purpose |
 |--------|-----------|------|---------|
-| **Node.js Backend** | Express + PostgreSQL | `5000` | Authentication, student management, chat routing, course CRUD |
+| **Node.js Backend** | Express + PostgreSQL | `8080` | Authentication, student management, chat routing, course CRUD |
 | **Python AI Service** | FastAPI + LangChain + ChromaDB | `8000` | RAG-powered AI advisor using handbook PDF + LLM |
 
 ### How They Work Together
@@ -21,7 +21,7 @@ Student (Frontend)
     │  POST /chat/message { "message": "What should I take next?" }
     ▼
 ┌──────────────────────────────────────────────────────┐
-│  Node.js Backend (port 5000)                         │
+│  Node.js Backend (port 8080)                         │
 │  1. Authenticates student (session cookie)            │
 │  2. Loads student profile from PostgreSQL             │
 │     (name, GPA, major, completed courses, etc.)       │
@@ -144,7 +144,7 @@ python main.py
 ```bash
 cd "FueBot-backend"
 npm run dev
-# → 🚀 FueBot server running on port 5000
+# → 🚀 FueBot server running on port 8080
 ```
 
 > ⚠️ **Start the Python AI server FIRST**, then the Node.js backend. This ensures the AI is ready when the backend starts making requests.
@@ -198,7 +198,7 @@ Expected output:
 #### 1. Login
 
 ```
-POST http://localhost:5000/auth/login
+POST http://localhost:8080/auth/login
 Content-Type: application/json
 
 {
@@ -212,7 +212,7 @@ Content-Type: application/json
 #### 2. Check AI Status
 
 ```
-GET http://localhost:5000/chat/ai-status
+GET http://localhost:8080/chat/ai-status
 Cookie: connect.sid=<your-session-cookie>
 ```
 
@@ -229,7 +229,7 @@ Response:
 #### 3. Send a Chat Message (AI-Powered)
 
 ```
-POST http://localhost:5000/chat/message
+POST http://localhost:8080/chat/message
 Content-Type: application/json
 Cookie: connect.sid=<your-session-cookie>
 
@@ -262,14 +262,14 @@ Response:
 #### 5. View Chat History
 
 ```
-GET http://localhost:5000/chat/history
+GET http://localhost:8080/chat/history
 Cookie: connect.sid=<your-session-cookie>
 ```
 
 #### 6. Clear Chat History
 
 ```
-DELETE http://localhost:5000/chat/history
+DELETE http://localhost:8080/chat/history
 Cookie: connect.sid=<your-session-cookie>
 ```
 
@@ -292,7 +292,7 @@ To verify the keyword-based fallback works when the AI is down:
 |----------|---------|-------------|
 | `PGDATABASE` | `fuebot_db` | PostgreSQL database name |
 | `PGPASSWORD` | — | PostgreSQL password |
-| `PORT` | `5000` | Node.js server port |
+| `PORT` | `8080` | Node.js server port |
 | `SESSION_SECRET` | — | Express session secret key |
 | `AI_SERVICE_URL` | `http://localhost:8000` | Python AI server URL |
 | `AI_SERVICE_TIMEOUT` | `60000` | AI request timeout (ms). Increase for slow LLMs |
@@ -373,7 +373,7 @@ files (1)/  (Python AI Service)
 | **"AI server not running"** | Make sure the Python server is started first: `python main.py` from the `files (1)` directory |
 | **Login fails with seed users** | Run `node reset_test_pwd.js` to reset Hassan's password, or register a new student via `POST /auth/register` |
 | **Bot gives keyword responses instead of AI** | Check `GET /chat/ai-status`. If AI is offline, start the Python server. If timeout, increase `AI_SERVICE_TIMEOUT` |
-| **Port already in use** | Kill the process: `Get-NetTCPConnection -LocalPort 5000 \| ForEach-Object { Stop-Process -Id $_.OwningProcess -Force }` |
+| **Port already in use** | Kill the process: `Get-NetTCPConnection -LocalPort 8080 \| ForEach-Object { Stop-Process -Id $_.OwningProcess -Force }` |
 
 ---
 

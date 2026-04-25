@@ -6,7 +6,7 @@ const http = require('http');
 function request(method, path, body) {
   return new Promise((resolve, reject) => {
     const data = body ? JSON.stringify(body) : null;
-    const options = { hostname: 'localhost', port: 5000, path, method, headers: { 'Content-Type': 'application/json' } };
+    const options = { hostname: 'localhost', port: 8080, path, method, headers: { 'Content-Type': 'application/json' } };
     const req = http.request(options, (res) => {
       let chunks = '';
       res.on('data', (d) => (chunks += d));

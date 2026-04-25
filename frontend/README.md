@@ -17,12 +17,12 @@ The app will run at `http://localhost:3000`.
 Create `frontend/.env` using the provided example:
 
 ```
-REACT_APP_API_BASE_URL=http://localhost:5000
+REACT_APP_API_BASE_URL=http://localhost:8080
 REACT_APP_USE_MOCKS=true
 ```
 
 - Set `REACT_APP_USE_MOCKS=false` to call the backend.
-- Use `REACT_APP_API_BASE_URL` as the backend root URL (e.g., `http://localhost:5000`).
+- Use `REACT_APP_API_BASE_URL` as the backend root URL (e.g., `http://localhost:8080`).
 
 ## Backend Integration
 

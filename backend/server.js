@@ -79,7 +79,7 @@ app.use((req, res) => {
 app.use(errorHandler);
 
 // ── Start Server ──────────────────────────────────────────────────
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
   console.log(`🚀 FueBot server running on port ${PORT} [${process.env.NODE_ENV || 'development'}]`);
 });
