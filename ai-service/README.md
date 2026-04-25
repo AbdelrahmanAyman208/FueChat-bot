@@ -12,9 +12,8 @@
 │                                                                    │
 │  POST /api/v1/ingest ──► PDFProcessor ──► VectorStoreManager      │
 │                           │                    │                   │
-│                      pdfplumber            FAISS / Chroma          │
-│                      tabula-py             (persisted to disk)     │
-│                      camelot                                       │
+│                      PyMuPDF               FAISS / Chroma          │
+│                      (fitz)                (persisted to disk)     │
 │                                                                    │
 │  POST /api/v1/chat ────► RAG Chain                                 │
 │  POST /api/v1/advise ──► CourseAdvisorChain                        │
@@ -38,7 +37,7 @@ academic_advisor/
 │   ├── __init__.py
 │   ├── config.py          # Settings from .env
 │   ├── models.py          # Pydantic schemas (StudentProfile, etc.)
-│   ├── pdf_processor.py   # PDF extraction: pdfplumber + tabula + camelot
+│   ├── pdf_processor.py   # PDF extraction: PyMuPDF (fitz)
 │   ├── vector_store.py    # FAISS & Chroma vector store management
 │   ├── prompts.py         # All LangChain prompt templates
 │   ├── rag_chain.py       # LangChain RAG chain assembly
@@ -66,9 +65,7 @@ academic_advisor/
 pip install -r requirements.txt
 ```
 
-> **Note:** `tabula-py` requires **Java** installed on your system.  
-> `camelot` requires **Ghostscript** for PDF rendering and **OpenCV** (`opencv-python`) for table detection.  
-> On Windows, we avoid the `camelot-py[base]` extra because it pulls in `pdftopng>=0.2.3`, which isn’t available for Python 3.11.
+> **Note:** PyMuPDF is a pure Python library with no external dependencies like Java or Ghostscript.
 
 ### 2. Configure environment
 
@@ -92,7 +89,7 @@ python -m app.ingest --rebuild
 ```
 
 This will:
-- Extract all text and tables (pdfplumber → tabula → camelot)
+- Extract all text and tables (PyMuPDF)
 - Split into ~800-token chunks with 150-token overlap
 - Embed using `text-embedding-3-small`
 - Persist to FAISS and/or Chroma
@@ -192,9 +189,7 @@ Content-Type: application/json
 
 | Library | Purpose | When Used |
 |---------|---------|-----------|
-| `pdfplumber` | Text + basic tables | Always (primary) |
-| `tabula-py` | Stream/lattice tables | Supplements pdfplumber |
-| `camelot` | High-accuracy tables with lines | Optional (needs Ghostscript) |
+| `PyMuPDF` | Text + table extraction | Primary extractor |
 
 ### Vector Stores
 

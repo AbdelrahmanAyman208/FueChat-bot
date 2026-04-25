@@ -58,7 +58,7 @@ def run_ingestion(
     t0 = time.time()
     logger.info(f"Extracting from: {path}")
     processor = PDFProcessor(path)
-    docs = processor.extract(use_tabula=True, use_camelot=False)  # camelot needs ghostscript
+    docs = processor.extract()  
     logger.info(f"Extracted {len(docs)} documents in {time.time()-t0:.1f}s")
 
     if not docs:

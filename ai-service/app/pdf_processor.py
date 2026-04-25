@@ -2,10 +2,10 @@
 pdf_processor.py
 ================
 Extracts raw text and structured tables from the academic handbook PDF using
-three complementary libraries:
-  - pdfplumber  → general text + basic table extraction
-  - tabula-py   → lattice/stream table extraction (Java-based)
-  - camelot     → high-accuracy table extraction with bounding-box detection
+PyMuPDF (fitz).
+
+PyMuPDF provides efficient text extraction and table detection with bounding-box
+analysis for high-accuracy table parsing.
 
 Returns a list of LangChain Document objects ready for splitting.
 """
@@ -14,24 +14,11 @@ from __future__ import annotations
 
 import logging
 import re
-import warnings
 from pathlib import Path
 from typing import Optional
 
 import pandas as pd
-import pdfplumber
-
-try:
-    import tabula
-    TABULA_AVAILABLE = True
-except ImportError:
-    TABULA_AVAILABLE = False
-
-try:
-    import camelot
-    CAMELOT_AVAILABLE = True
-except ImportError:
-    CAMELOT_AVAILABLE = False
+import pymupdf  # PyMuPDF
 
 from langchain_core.documents import Document
 
@@ -67,17 +54,15 @@ def _table_to_markdown(df: pd.DataFrame) -> str:
 
 
 # ─────────────────────────────────────────────────────────────
-# Extraction strategies
+# PDF Processor
 # ─────────────────────────────────────────────────────────────
 
 class PDFProcessor:
     """
-    Multi-strategy PDF extractor.
+    PyMuPDF-based PDF extractor.
 
-    Strategy:
-      1. pdfplumber  – page text + simple tables (always used)
-      2. tabula-py   – stream + lattice tables (fallback for complex tables)
-      3. camelot     – lattice tables with explicit line detection (most accurate)
+    Extracts text and tables from PDF pages using PyMuPDF's efficient parsing.
+    Tables are detected and extracted as DataFrames, then converted to Markdown.
     """
 
     def __init__(self, pdf_path: str | Path):
@@ -85,32 +70,38 @@ class PDFProcessor:
         if not self.pdf_path.exists():
             raise FileNotFoundError(f"PDF not found: {self.pdf_path}")
 
-    # ----------------------------------------------------------
-    # Strategy 1: pdfplumber
-    # ----------------------------------------------------------
+    def extract(self) -> list[Document]:
+        """
+        Extract text and tables from all PDF pages using PyMuPDF.
 
-    def _extract_with_pdfplumber(self) -> list[Document]:
+        Returns a list of Document objects, one per page with combined content.
+        """
         docs: list[Document] = []
-        with pdfplumber.open(self.pdf_path) as pdf:
-            total = len(pdf.pages)
-            logger.info(f"[pdfplumber] Processing {total} pages …")
+        with pymupdf.open(self.pdf_path) as pdf:
+            total = len(pdf)
+            logger.info(f"[PyMuPDF] Processing {total} pages …")
 
-            for page_num, page in enumerate(pdf.pages, start=1):
-                page_text = page.extract_text() or ''
+            for page_num in range(total):
+                page = pdf[page_num]
+                page_num_display = page_num + 1  # 1-based for display
+
+                # Extract text
+                page_text = page.get_text() or ''
                 page_text = _clean_text(page_text)
 
-                # Extract tables on this page
-                tables = page.extract_tables()
+                # Extract tables
+                tables = page.find_tables()
                 table_texts: list[str] = []
-                for tbl in tables:
+                for table_idx, table in enumerate(tables):
                     try:
-                        df = pd.DataFrame(tbl)
+                        df = table.to_pandas()
                         md = _table_to_markdown(df)
                         if md:
-                            table_texts.append(md)
+                            table_texts.append(f"[TABLE #{table_idx}]\n{md}")
                     except Exception as exc:
-                        logger.debug(f"pdfplumber table error p{page_num}: {exc}")
+                        logger.debug(f"PyMuPDF table error p{page_num_display} t{table_idx}: {exc}")
 
+                # Combine text and tables
                 combined = page_text
                 if table_texts:
                     combined += '\n\n' + '\n\n'.join(table_texts)
@@ -120,126 +111,12 @@ class PDFProcessor:
                         page_content=combined,
                         metadata={
                             'source': str(self.pdf_path),
-                            'page': page_num,
-                            'extractor': 'pdfplumber',
+                            'page': page_num_display,
+                            'extractor': 'pymupdf',
                         }
                     ))
 
-        logger.info(f"[pdfplumber] Extracted {len(docs)} page documents.")
-        return docs
-
-    # ----------------------------------------------------------
-    # Strategy 2: tabula-py
-    # ----------------------------------------------------------
-
-    def _extract_tables_tabula(self) -> list[Document]:
-        if not TABULA_AVAILABLE:
-            logger.warning("tabula-py not available – skipping.")
-            return []
-
-        docs: list[Document] = []
-        for method in ('lattice', 'stream'):
-            try:
-                lattice = method == "lattice"
-                stream = method == "stream"
-                with warnings.catch_warnings():
-                    # tabula-py currently emits noisy FutureWarnings from pandas conversions
-                    warnings.filterwarnings(
-                        "ignore",
-                        message=r".*errors='ignore' is deprecated.*",
-                        category=FutureWarning,
-                    )
-                    tables = tabula.read_pdf(
-                        str(self.pdf_path),
-                        pages='all',
-                        multiple_tables=True,
-                        lattice=lattice,
-                        stream=stream,
-                        pandas_options={'header': 0},
-                        silent=True,
-                        encoding="utf-8",
-                        force_subprocess=True,
-                    )
-                for idx, df in enumerate(tables):
-                    md = _table_to_markdown(df)
-                    if md and len(md) > 30:
-                        docs.append(Document(
-                            page_content=f"[TABLE – tabula/{method} #{idx}]\n{md}",
-                            metadata={
-                                'source': str(self.pdf_path),
-                                'table_index': idx,
-                                'extractor': f'tabula-{method}',
-                            }
-                        ))
-            except Exception as exc:
-                logger.warning(f"[tabula/{method}] Error: {exc}")
-
-        logger.info(f"[tabula] Extracted {len(docs)} table documents.")
-        return docs
-
-    # ----------------------------------------------------------
-    # Strategy 3: camelot
-    # ----------------------------------------------------------
-
-    def _extract_tables_camelot(self) -> list[Document]:
-        if not CAMELOT_AVAILABLE:
-            logger.warning("camelot not available – skipping.")
-            return []
-
-        docs: list[Document] = []
-        for flavor in ('lattice', 'stream'):
-            try:
-                tables = camelot.read_pdf(
-                    str(self.pdf_path),
-                    pages='all',
-                    flavor=flavor,
-                )
-                for idx, table in enumerate(tables):
-                    df = table.df
-                    md = _table_to_markdown(df)
-                    if md and len(md) > 30:
-                        docs.append(Document(
-                            page_content=f"[TABLE – camelot/{flavor} #{idx}]\n{md}",
-                            metadata={
-                                'source': str(self.pdf_path),
-                                'table_index': idx,
-                                'accuracy': round(table.accuracy, 2),
-                                'extractor': f'camelot-{flavor}',
-                            }
-                        ))
-            except Exception as exc:
-                logger.warning(f"[camelot/{flavor}] Error: {exc}")
-
-        logger.info(f"[camelot] Extracted {len(docs)} table documents.")
-        return docs
-
-    # ----------------------------------------------------------
-    # Public API
-    # ----------------------------------------------------------
-
-    def extract(
-        self,
-        use_tabula: bool = True,
-        use_camelot: bool = True,
-    ) -> list[Document]:
-        """
-        Run all extraction strategies and merge results.
-
-        Returns deduplicated Document list.
-        """
-        logger.info(f"Starting PDF extraction: {self.pdf_path}")
-
-        # Always run pdfplumber
-        docs = self._extract_with_pdfplumber()
-
-        # Supplement with specialised table extractors
-        if use_tabula:
-            docs += self._extract_tables_tabula()
-
-        if use_camelot:
-            docs += self._extract_tables_camelot()
-
-        logger.info(f"Total documents extracted: {len(docs)}")
+        logger.info(f"[PyMuPDF] Extracted {len(docs)} page documents.")
         return docs
 
 
