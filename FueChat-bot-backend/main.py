@@ -8,17 +8,20 @@ Endpoints:
   POST /api/v1/chat            – General handbook Q&A
   POST /api/v1/advise          – Personalised course recommendations
   DELETE /api/v1/session/{id}  – Clear chat history
+  POST /api/v1/transcribe      – Speech-to-text transcription
   GET  /api/v1/health          – Health check
   GET  /docs                   – Swagger UI
 """
 
 from __future__ import annotations
 
+import io
 import logging
+import tempfile
 from contextlib import asynccontextmanager
 from pathlib import Path
 
-from fastapi import FastAPI, HTTPException, status
+from fastapi import FastAPI, File, HTTPException, UploadFile, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse, StreamingResponse
 
@@ -180,8 +183,9 @@ async def chat(request: ChatRequest):
                 generator = answer_question_stream(request.session_id, request.message)
 
             async for chunk in generator:
-                # SSE format: data: <chunk>\n\n
-                yield f"data: {chunk}\n\n"
+                # SSE format requires single line payloads. Escape newlines.
+                safe_chunk = chunk.replace("\n", "\\n")
+                yield f"data: {safe_chunk}\n\n"
         except Exception as exc:
             logger.exception("Chat stream error")
             yield f"data: [ERROR] {str(exc)}\n\n"
@@ -216,7 +220,8 @@ async def advise(request: ChatRequest):
         try:
             generator = recommend_courses_stream(request.session_id, question, request.student_profile)
             async for chunk in generator:
-                yield f"data: {chunk}\n\n"
+                safe_chunk = chunk.replace("\n", "\\n")
+                yield f"data: {safe_chunk}\n\n"
         except Exception as exc:
             logger.exception("Advise stream error")
             yield f"data: [ERROR] {str(exc)}\n\n"
@@ -233,6 +238,53 @@ async def delete_session(session_id: str):
     clear_session(session_id)
     _session_profiles.pop(session_id, None)
     return {"status": "cleared", "session_id": session_id}
+
+
+@app.post(
+    "/api/v1/transcribe",
+    tags=["Utility"],
+    summary="Transcribe audio (WAV) to text",
+)
+async def transcribe_audio(audio: UploadFile = File(...)):
+    """
+    Accept a WAV audio file and return the transcribed text.
+    Uses Google's free Speech Recognition API.
+    """
+    import speech_recognition as sr
+
+    try:
+        audio_bytes = await audio.read()
+        if len(audio_bytes) < 100:
+            raise HTTPException(status_code=400, detail="Audio file is too small or empty.")
+
+        # Write to a temp WAV file
+        with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as tmp:
+            tmp.write(audio_bytes)
+            tmp_path = tmp.name
+
+        recognizer = sr.Recognizer()
+        with sr.AudioFile(tmp_path) as source:
+            audio_data = recognizer.record(source)
+
+        # Clean up temp file
+        try:
+            Path(tmp_path).unlink()
+        except Exception:
+            pass
+
+        # Transcribe using Google's free API
+        text = recognizer.recognize_google(audio_data)
+        logger.info(f"Transcription result: {text[:80]}...")
+        return {"text": text}
+
+    except sr.UnknownValueError:
+        return {"text": "", "error": "Could not understand audio. Please try again."}
+    except sr.RequestError as exc:
+        logger.error(f"Speech recognition service error: {exc}")
+        raise HTTPException(status_code=503, detail=f"Speech recognition service unavailable: {exc}")
+    except Exception as exc:
+        logger.exception("Transcription failed")
+        raise HTTPException(status_code=500, detail=str(exc))
 
 
 # ─────────────────────────────────────────────────────────────

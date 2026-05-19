@@ -46,7 +46,12 @@ def _clean_text(text: str) -> str:
     """Remove noise, fix encoding artefacts and normalise whitespace."""
     # Drop Arabic/RTL characters (they appear as noise in mixed docs)
     text = re.sub(r'[\u0600-\u06FF\u0750-\u077F]+', '', text)
-    # Drop cid artefacts
+    
+    # Fix specific CID ligature bugs in the FUE PDF font
+    text = text.replace('(cid:415)', 'ti')
+    text = text.replace('(cid:425)', 'tt')
+    
+    # Drop remaining cid artefacts
     text = re.sub(r'\(cid:\d+\)', '', text)
     # Drop non-printable characters
     text = re.sub(r'[^\x20-\x7E\n]', ' ', text)

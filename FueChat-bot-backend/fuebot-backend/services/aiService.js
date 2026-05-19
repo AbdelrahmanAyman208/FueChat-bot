@@ -28,6 +28,7 @@ const MAJOR_MAP = {
   'ai':            'Artificial Intelligence',
   'cybersecurity': 'Cybersecurity',
   'cs_sec':        'Cybersecurity',
+  'cy':            'Cybersecurity',
   'is':            'Information Systems',
   'ds':            'Data Science',
   'dmt':           'Digital Media Technology department',     
