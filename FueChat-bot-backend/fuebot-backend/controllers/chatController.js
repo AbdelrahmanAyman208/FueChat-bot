@@ -147,3 +147,109 @@ exports.getAIStatus = async (req, res) => {
     res.json({ available: false, reason: error.message });
   }
 };
+
+// POST /chat/program-finder — AI-powered program recommendation quiz
+exports.programFinder = async (req, res) => {
+  try {
+    const { answers } = req.body;
+    const studentId = req.user.id;
+
+    if (!answers || !Array.isArray(answers) || answers.length === 0) {
+      return res.status(400).json({ message: 'Quiz answers are required' });
+    }
+
+    const questions = [
+      'What excites you most about technology?',
+      'Which school subject did you enjoy most?',
+      'What kind of problems do you enjoy solving?',
+      'Where do you see yourself in 5 years?',
+      'Which activity sounds most appealing?',
+      'How do you feel about math and statistics?',
+      'What matters most to you in a career?',
+    ];
+
+    let answersText = '';
+    answers.forEach((answer, i) => {
+      answersText += `Q${i + 1}: ${questions[i] || `Question ${i + 1}`}\nAnswer: ${answer}\n\n`;
+    });
+
+    const prompt = `You are an academic program advisor for the Faculty of Computers and Information Technology at Future University in Egypt.
+
+A freshman/sophomore student has just completed a career interest quiz. Based on their answers below, recommend the SINGLE BEST program for them from these 5 options:
+
+1. **Computer Science (CS)** — Software engineering, algorithms, systems programming, web/mobile development
+2. **Artificial Intelligence (AI)** — Machine learning, deep learning, NLP, computer vision, robotics
+3. **Cybersecurity (CY)** — Network security, ethical hacking, digital forensics, cryptography
+4. **Information Systems (IS)** — Business analysis, database management, ERP systems, IT management
+5. **Data Science (DS)** — Data analysis, statistics, data visualization, big data, business intelligence
+
+## Student's Quiz Answers:
+${answersText}
+
+## Your Response Format:
+1. Start with a clear heading: "🎯 Recommended Program: [Program Name]"
+2. Explain WHY this program is the best fit (1-2 very brief sentences referencing specific answers)
+3. List "📚 Key Courses You'll Take:" (3 specific courses)
+4. List "💼 Career Opportunities:" (3 specific roles)
+5. Add a "✨ Why This Fits You:" section (1 brief concluding sentence)
+
+Be extremely concise, brief, and specific. Do not add fluff. Use markdown formatting with bold, headers, and bullet points.`;
+
+    const sessionId = `program-finder-${Date.now()}-${studentId}`;
+
+    // Set headers for SSE
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
+
+    // Call Python AI service
+    const axios = require('axios');
+    const AI_BASE_URL = process.env.AI_SERVICE_URL || 'http://localhost:8000';
+
+    try {
+      const response = await axios.post(`${AI_BASE_URL}/api/v1/chat`, {
+        session_id: sessionId,
+        message: prompt,
+      }, {
+        responseType: 'stream',
+        timeout: 90000,
+      });
+
+      let fullAnswer = '';
+
+      response.data.on('data', (chunk) => {
+        const text = chunk.toString();
+        const lines = text.split('\n');
+        for (const line of lines) {
+          if (line.startsWith('data: ') && !line.includes('[ERROR]')) {
+            fullAnswer += line.substring(6);
+          }
+        }
+        res.write(chunk);
+      });
+
+      response.data.on('end', () => {
+        res.write(`data: [DONE]\n\n`);
+        res.end();
+      });
+
+      response.data.on('error', (err) => {
+        console.error('Program finder stream error:', err);
+        res.write(`data: [ERROR] ${err.message}\n\n`);
+        res.end();
+      });
+    } catch (aiError) {
+      console.error('AI service error:', aiError.message);
+      res.write(`data: [ERROR] AI service unavailable. Please try again later.\n\n`);
+      res.end();
+    }
+  } catch (error) {
+    console.error('Program finder error:', error);
+    if (!res.headersSent) {
+      res.status(500).json({ message: 'Internal server error' });
+    } else {
+      res.write(`data: [ERROR] Internal server error\n\n`);
+      res.end();
+    }
+  }
+};
