@@ -80,3 +80,10 @@ npm start
 ```
 
 Your system is now online! Navigate your browser to `http://localhost:3000` to interact with FueBot.
+
+
+
+//run the full project 
+
+cd C:\Users\Administrator\Downloads\FueChat-bot-backend\FueChat-bot-backend
+.\start_all.bat

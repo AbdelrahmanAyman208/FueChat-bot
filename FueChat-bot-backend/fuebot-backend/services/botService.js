@@ -527,4 +527,4 @@ async function buildScheduleTable(ctx) {
   return md;
 }
 
-module.exports = { buildBotResponseStream, buildBotResponse: async (m, s) => buildBotResponseStream(m, s, null, { write: () => {} }) };
+module.exports = { loadStudentContext, buildBotResponseStream, buildBotResponse: async (m, s) => buildBotResponseStream(m, s, null, { write: () => {} }) };

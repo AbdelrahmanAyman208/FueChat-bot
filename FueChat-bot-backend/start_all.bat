@@ -3,6 +3,9 @@ echo =========================================
 echo Starting FueBot Complete System
 echo =========================================
 
+echo Starting Redis Server (Port 6379)...
+start "Redis Server" cmd /k "cd Redis && redis-server.exe redis.windows.conf"
+
 echo Starting Python AI Backend (Port 8000)...
 start "Python Backend" cmd /k "python main.py"
 

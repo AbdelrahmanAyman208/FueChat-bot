@@ -139,7 +139,7 @@ def build_advisor_chain():
 
 
 # ── Public Inference Functions ────────────────────────────────
-async def answer_question_stream(session_id: str, question: str):
+async def answer_question_stream(session_id: str, question: str, file_context: str = ""):
     vsm = get_vector_store_manager()
     retriever = vsm.get_retriever()
     llm = get_llm()
@@ -155,6 +155,8 @@ async def answer_question_stream(session_id: str, question: str):
     # Step 2: Retrieve
     docs = await retriever.ainvoke(standalone_q)
     context = format_docs(docs)
+    if file_context:
+        context = f"[Extracted from uploaded file]\n{file_context}\n\n---\n\n{context}"
 
     # Step 3: Stream
     chain = RAG_TEMPLATE | llm | StrOutputParser()
@@ -189,7 +191,7 @@ async def answer_question(session_id: str, question: str) -> dict:
     return {"answer": answer, "sources": list(set(sources))}
 
 
-async def recommend_courses_stream(session_id: str, question: str, profile: StudentProfile):
+async def recommend_courses_stream(session_id: str, question: str, profile: StudentProfile, file_context: str = ""):
     vsm = get_vector_store_manager()
     retriever = vsm.get_retriever(k=16)
     queries = [
@@ -213,6 +215,8 @@ async def recommend_courses_stream(session_id: str, question: str, profile: Stud
     manual_rules = build_manual_prereq_context(profile)
     if manual_rules:
         context = f"{context}\n\n---\n\n{manual_rules}"
+    if file_context:
+        context = f"[Extracted from uploaded file]\n{file_context}\n\n---\n\n{context}"
 
     chain = build_advisor_chain()
     chunks = []

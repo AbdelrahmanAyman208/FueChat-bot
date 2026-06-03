@@ -193,6 +193,64 @@ async def chat(request: ChatRequest):
     return StreamingResponse(event_generator(), media_type="text/event-stream")
 
 
+from fastapi import Form
+import json
+from app.file_extractor import extract_text_from_file
+
+@app.post(
+    "/api/v1/chat/upload",
+    tags=["Chat"],
+    summary="Chat with file upload (Streaming)",
+)
+async def chat_with_upload(
+    session_id: str = Form(...),
+    message: str = Form(""),
+    student_profile: str = Form(None),
+    file: UploadFile = File(...)
+):
+    vsm = get_vector_store_manager()
+    if not vsm.is_ready:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Vector store not ready. Call POST /api/v1/ingest first.",
+        )
+
+    # Parse profile
+    profile_obj = None
+    if student_profile and student_profile != "undefined":
+        try:
+            from app.models import StudentProfile
+            profile_dict = json.loads(student_profile)
+            profile_obj = StudentProfile(**profile_dict)
+            _session_profiles[session_id] = profile_obj
+        except Exception as e:
+            logger.warning(f"Failed to parse student_profile json: {e}")
+
+    profile = _session_profiles.get(session_id)
+
+    # Extract text from file
+    file_bytes = await file.read()
+    file_context = extract_text_from_file(file_bytes, file.filename, file.content_type)
+    
+    logger.info(f"Extracted {len(file_context)} chars from {file.filename}")
+
+    async def event_generator():
+        try:
+            if profile:
+                generator = recommend_courses_stream(session_id, message, profile, file_context)
+            else:
+                generator = answer_question_stream(session_id, message, file_context)
+
+            async for chunk in generator:
+                safe_chunk = chunk.replace("\n", "\\n")
+                yield f"data: {safe_chunk}\n\n"
+        except Exception as exc:
+            logger.exception("Upload chat stream error")
+            yield f"data: [ERROR] {str(exc)}\n\n"
+
+    return StreamingResponse(event_generator(), media_type="text/event-stream")
+
+
 @app.post(
     "/api/v1/advise",
     tags=["Advising"],

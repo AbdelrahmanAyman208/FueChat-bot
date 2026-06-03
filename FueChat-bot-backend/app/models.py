@@ -112,7 +112,7 @@ class StudentProfile(BaseModel):
 
 class ChatRequest(BaseModel):
     session_id: str = Field(..., description="Unique chat session identifier")
-    message: str = Field(..., min_length=1, max_length=2000)
+    message: str = Field(..., min_length=1, max_length=8000)
     student_profile: Optional[StudentProfile] = Field(
         None,
         description="Provide once at session start; reused for subsequent turns"

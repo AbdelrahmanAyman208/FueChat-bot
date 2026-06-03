@@ -11,6 +11,7 @@ const chatRoutes = require('./routes/chatRoutes');
 const courseRoutes = require('./routes/courseRoutes');
 const studentRoutes = require('./routes/studentRoutes');
 const advisorRoutes = require('./routes/advisorRoutes');
+const recommendationRoutes = require('./routes/recommendationRoutes');
 const errorHandler = require('./middleware/errorHandler');
 
 const app = express();
@@ -69,6 +70,7 @@ app.use('/api/chat', chatRoutes);
 app.use('/api/courses', courseRoutes);
 app.use('/api/student', studentRoutes);
 app.use('/api/advisor', advisorRoutes);
+app.use('/api/recommendations', recommendationRoutes);
 
 // ── 404 Handler ───────────────────────────────────────────────────
 app.use((req, res) => {

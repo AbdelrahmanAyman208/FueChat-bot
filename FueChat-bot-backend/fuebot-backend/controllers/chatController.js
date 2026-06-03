@@ -1,6 +1,8 @@
 const db = require('../config/db');
-const { buildBotResponseStream, buildBotResponse } = require('../services/botService');
-const { checkAIHealth } = require('../services/aiService');
+const { buildBotResponseStream, buildBotResponse, loadStudentContext } = require('../services/botService');
+const { checkAIHealth, mapStudentContextToProfile } = require('../services/aiService');
+const axios = require('axios');
+const FormData = require('form-data');
 
 // POST /chat/message
 exports.sendMessage = async (req, res) => {
@@ -41,6 +43,109 @@ exports.sendMessage = async (req, res) => {
     console.error('Chat error:', error);
     res.write(`data: [ERROR] Internal server error\n\n`);
     res.end();
+  }
+};
+
+// POST /chat/upload-message
+exports.sendMessageWithFile = async (req, res) => {
+  try {
+    const { message, sessionId } = req.body;
+    const studentId = req.user.id;
+    const file = req.file;
+
+    if (!file) {
+      return res.status(400).json({ message: 'No file uploaded' });
+    }
+
+    const finalSessionId = sessionId || `session-${Date.now()}-${studentId}`;
+
+    // Set headers for SSE
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
+
+    res.write(`data: [SESSION_ID] ${finalSessionId}\n\n`);
+
+    const ctx = await loadStudentContext(studentId);
+    if (!ctx) {
+      const errorMsg = "Sorry, I couldn't load your student profile.";
+      res.write(`data: ${errorMsg}\n\n`);
+      res.write(`data: [DONE] 0\n\n`);
+      return res.end();
+    }
+
+    const profile = mapStudentContextToProfile(ctx);
+    
+    // Prepare form data
+    const formData = new FormData();
+    formData.append('session_id', finalSessionId);
+    formData.append('message', message || '');
+    formData.append('student_profile', JSON.stringify(profile));
+    formData.append('file', file.buffer, {
+      filename: file.originalname,
+      contentType: file.mimetype,
+    });
+
+    const AI_BASE_URL = process.env.AI_SERVICE_URL || 'http://localhost:8000';
+
+    try {
+      const response = await axios.post(`${AI_BASE_URL}/api/v1/chat/upload`, formData, {
+        headers: { ...formData.getHeaders() },
+        responseType: 'stream',
+        timeout: 90000,
+      });
+
+      let fullAnswer = '';
+
+      response.data.on('data', (chunk) => {
+        const text = chunk.toString();
+        const lines = text.split('\n');
+        for (const line of lines) {
+          if (line.startsWith('data: ') && !line.includes('[ERROR]')) {
+            fullAnswer += line.substring(6);
+          }
+        }
+        res.write(chunk);
+      });
+
+      response.data.on('end', async () => {
+        // Save to DB
+        try {
+          const userMessageStr = message ? `[Attached File: ${file.originalname}]\n${message}` : `[Attached File: ${file.originalname}]`;
+          const result = await db.query(
+            `INSERT INTO chat_history (student_id, user_message, bot_response, session_id, session_status)
+             VALUES ($1, $2, $3, $4, 'open') RETURNING chat_id, timestamp`,
+            [studentId, userMessageStr, fullAnswer, finalSessionId]
+          );
+          const chatId = result.rows[0].chat_id;
+          res.write(`data: [DONE] ${chatId}\n\n`);
+        } catch (dbErr) {
+          console.error('Save to db error:', dbErr);
+          res.write(`data: [DONE] 0\n\n`);
+        }
+        res.end();
+      });
+
+      response.data.on('error', (err) => {
+        console.error('Upload stream error:', err);
+        res.write(`data: [ERROR] ${err.message}\n\n`);
+        res.end();
+      });
+
+    } catch (aiError) {
+      console.error('AI service upload error:', aiError.message);
+      res.write(`data: [ERROR] AI service unavailable or failed to process file.\n\n`);
+      res.end();
+    }
+
+  } catch (error) {
+    console.error('Upload error:', error);
+    if (!res.headersSent) {
+      res.status(500).json({ message: 'Internal server error' });
+    } else {
+      res.write(`data: [ERROR] Internal server error\n\n`);
+      res.end();
+    }
   }
 };
 
